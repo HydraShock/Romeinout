@@ -1,17 +1,24 @@
 import styles from './CtaMarbleTriptych.module.css';
 
+const MARBLE_ENGRAVED = true;
+
 export default function CtaMarbleTriptych() {
+  const mainPanelClassName = `${styles.mainPanel}${MARBLE_ENGRAVED ? ` ${styles['marble-card-glow']}` : ''}`;
+  const iconBadgeClassName = `${styles.iconBadge}${MARBLE_ENGRAVED ? ` ${styles['marble-engraved-icon']}` : ''}`;
+  const titleClassName = MARBLE_ENGRAVED ? styles['marble-engraved-title'] : '';
+  const subClassName = MARBLE_ENGRAVED ? styles['marble-engraved-sub'] : '';
+
   return (
     <section className={styles.ctaWrap}>
       <div className={styles.bgSoft} />
       <div className={styles.triptych}>
         <div className={`${styles.sidePanel} ${styles.left}`} aria-hidden="true" />
         <div className={`${styles.sidePanel} ${styles.right}`} aria-hidden="true" />
-        <div className={styles.mainPanel}>
+        <div className={mainPanelClassName}>
           <span className={styles.romanWatermark} aria-hidden="true">
             SPQR / ROMA
           </span>
-          <div className={styles.iconBadge}>
+          <div className={iconBadgeClassName}>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
               <rect x="3.5" y="4.5" width="17" height="16" rx="2.75" stroke="currentColor" strokeWidth="1.9" />
               <path d="M3.5 9.5H20.5" stroke="currentColor" strokeWidth="1.9" />
@@ -19,8 +26,8 @@ export default function CtaMarbleTriptych() {
               <path d="M7.8 13.2H10.2M13.8 13.2H16.2M7.8 16.5H10.2M13.8 16.5H16.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
           </div>
-          <h2>Pronti a Vivere Roma?</h2>
-          <p>
+          <h2 className={titleClassName}>Pronti a Vivere Roma?</h2>
+          <p className={subClassName}>
             Prenota ora il tuo tour in tuk tuk e scopri
             <br />
             la magia della citt&agrave; eterna
