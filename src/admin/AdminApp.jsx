@@ -42,7 +42,7 @@ function clearSessionStorage() {
 function AdminLoginScreen() {
   const navigate = useNavigate();
   const { session, login } = useAdminAuth();
-  const [email, setEmail] = useState('admin.bab236@tuktukroma.com');
+  const [email, setEmail] = useState('admin.20530d@tuktukroma.com');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

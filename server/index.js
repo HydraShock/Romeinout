@@ -7,17 +7,27 @@ const { Pool } = require('pg');
 dotenv.config();
 
 const app = express();
-const port = Number(process.env.PORT || 4000);
+const port = Number(process.env.API_PORT || process.env.PORT || 4000);
 const frontendOriginRaw = process.env.FRONTEND_ORIGIN || '*';
 const maxBookingsPerSlot = Number(process.env.MAX_BOOKINGS_PER_SLOT || 1);
 const pendingIntentMinutes = Number(process.env.PENDING_INTENT_MINUTES || 15);
 const defaultPaymentMode = process.env.NODE_ENV === 'production' ? 'paypal' : 'mock';
 const paymentMode = String(process.env.PAYMENT_MODE || defaultPaymentMode).trim().toLowerCase();
+const paypalEnvRaw = String(process.env.PAYPAL_ENV || '').trim().toLowerCase();
+const paypalEnv = paypalEnvRaw === 'live' ? 'live' : 'sandbox';
+const paypalClientId = String(process.env.PAYPAL_CLIENT_ID || '').trim();
+const paypalClientSecret = String(process.env.PAYPAL_CLIENT_SECRET || '').trim();
+const paypalApiBaseUrl = paypalEnv === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+const isPayPalConfigured = Boolean(paypalClientId && paypalClientSecret);
 const paymentProvidersByMode = {
   mock: ['mock', 'paypal'],
   paypal: ['paypal'],
 };
-const allowedPaymentProviders = paymentProvidersByMode[paymentMode] || paymentProvidersByMode[defaultPaymentMode];
+const allowedPaymentProviders = (paymentProvidersByMode[paymentMode] || paymentProvidersByMode[defaultPaymentMode])
+  .filter((provider) => provider !== 'paypal' || isPayPalConfigured);
+if (!allowedPaymentProviders.length) {
+  allowedPaymentProviders.push('mock');
+}
 const fixedAvailabilitySlots = ['10:00', '14:00', '18:00'];
 const fixedAvailabilitySlotCapacity = 1;
 const slotLabels = (process.env.SLOT_LABELS || '09:00 - 11:30,11:45 - 14:20,15:00 - 17:30')
@@ -30,8 +40,8 @@ const tourPriceByIdCents = {
 };
 const tourPriceByIdJson = JSON.stringify(tourPriceByIdCents);
 const tourLabelById = {
-  'roma-mangia-prega-ama': 'Classic Rome Tour',
-  'when-in-rome': 'When In Rome Tour',
+  'roma-mangia-prega-ama': 'Roma tour mangia prega ama',
+  'when-in-rome': 'A Roma fai come i Romani',
 };
 const maxSafeIntegerBigInt = BigInt(Number.MAX_SAFE_INTEGER);
 const adminEmail = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
@@ -45,6 +55,8 @@ const adminLoginBaseLockMs = Math.max(30 * 1000, Number(process.env.ADMIN_LOGIN_
 const adminSessions = new Map();
 const adminLoginAttemptsByIp = new Map();
 const adminLoginAttemptsByEmail = new Map();
+let paypalAccessToken = '';
+let paypalAccessTokenExpiresAt = 0;
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -59,6 +71,20 @@ const allowedOrigins = frontendOriginRaw
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
+const isProduction = process.env.NODE_ENV === 'production';
+
+function isLocalhostOrigin(origin) {
+  if (!origin) {
+    return false;
+  }
+  try {
+    const parsedOrigin = new URL(origin);
+    const hostname = String(parsedOrigin.hostname || '').toLowerCase();
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+  } catch (error) {
+    return false;
+  }
+}
 
 const corsOptions = {
   origin(origin, callback) {
@@ -70,7 +96,11 @@ const corsOptions = {
       callback(null, true);
       return;
     }
-    callback(new Error('Origin non consentita da CORS.'));
+    if (!isProduction && isLocalhostOrigin(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error(`Origin non consentita da CORS: ${origin}`));
   },
 };
 
@@ -221,6 +251,74 @@ function resolveTourLabel(tourIdRaw) {
     .filter(Boolean)
     .map((token) => token.charAt(0).toUpperCase() + token.slice(1))
     .join(' ');
+}
+
+function ensurePayPalIsEnabled() {
+  if (!allowedPaymentProviders.includes('paypal')) {
+    const error = new Error('Pagamento PayPal non disponibile.');
+    error.statusCode = 503;
+    throw error;
+  }
+}
+
+async function getPayPalAccessToken() {
+  ensurePayPalIsEnabled();
+
+  const now = Date.now();
+  if (paypalAccessToken && now < paypalAccessTokenExpiresAt - 60 * 1000) {
+    return paypalAccessToken;
+  }
+
+  const authToken = Buffer.from(`${paypalClientId}:${paypalClientSecret}`).toString('base64');
+  const response = await fetch(`${paypalApiBaseUrl}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${authToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: 'application/json',
+    },
+    body: 'grant_type=client_credentials',
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok || !payload.access_token) {
+    const error = new Error('Impossibile autenticare PayPal.');
+    error.statusCode = 502;
+    throw error;
+  }
+
+  paypalAccessToken = payload.access_token;
+  paypalAccessTokenExpiresAt = now + Number(payload.expires_in || 300) * 1000;
+  return paypalAccessToken;
+}
+
+async function paypalApiRequest(path, options = {}) {
+  const token = await getPayPalAccessToken();
+  const method = options.method || 'GET';
+  const response = await fetch(`${paypalApiBaseUrl}${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const apiMessage =
+      payload?.message
+      || payload?.details?.[0]?.description
+      || payload?.name
+      || `Errore PayPal (${response.status}).`;
+    const error = new Error(apiMessage);
+    error.statusCode = response.status >= 500 ? 502 : response.status;
+    throw error;
+  }
+
+  return payload;
 }
 
 function createAdminSession(email) {
@@ -519,7 +617,8 @@ app.get('/api/health', async (req, res) => {
     await pool.query('SELECT 1');
     res.json({ ok: true });
   } catch (error) {
-    res.status(500).json({ ok: false, message: 'Database non raggiungibile.' });
+    const message = isProduction ? 'Database non raggiungibile.' : `Database non raggiungibile: ${error.message}`;
+    res.status(500).json({ ok: false, message });
   }
 });
 
@@ -527,7 +626,151 @@ app.get('/api/payment-config', (req, res) => {
   res.json({
     mode: paymentMode,
     providers: allowedPaymentProviders,
+    paypal: {
+      enabled: allowedPaymentProviders.includes('paypal'),
+      environment: paypalEnv,
+      currency: 'EUR',
+    },
+    paypalClientId: allowedPaymentProviders.includes('paypal') ? paypalClientId : '',
   });
+});
+
+app.post('/api/paypal/orders', async (req, res) => {
+  try {
+    ensurePayPalIsEnabled();
+
+    const intentId = req.body?.intentId;
+    if (!intentId) {
+      res.status(400).json({ message: 'Intent ID mancante per la creazione ordine PayPal.' });
+      return;
+    }
+
+    const intentResult = await pool.query(
+      `
+        SELECT
+          id,
+          booking_date,
+          time_slot,
+          guests,
+          tour_id,
+          unit_price_cents,
+          total_price_cents,
+          status,
+          expires_at
+        FROM booking_intents
+        WHERE id = $1
+      `,
+      [intentId]
+    );
+
+    if (!intentResult.rows.length) {
+      res.status(404).json({ message: 'Prenotazione buffer non trovata.' });
+      return;
+    }
+
+    const intent = intentResult.rows[0];
+    if (intent.status !== 'pending') {
+      res.status(409).json({ message: 'Intent gia processato.' });
+      return;
+    }
+
+    const expired = new Date(intent.expires_at).getTime() <= Date.now();
+    if (expired) {
+      await pool.query('UPDATE booking_intents SET status = $1 WHERE id = $2', ['expired', intent.id]);
+      res.status(409).json({ message: 'Intent scaduto, riprova.' });
+      return;
+    }
+
+    const guestsNumber = Number(intent.guests || 0);
+    let unitPriceCents = Number(intent.unit_price_cents);
+    if (!Number.isInteger(unitPriceCents) || unitPriceCents < 0) {
+      const resolvedUnitPrice = resolveTourPriceCents(intent.tour_id);
+      if (resolvedUnitPrice === null) {
+        res.status(409).json({ message: 'Prezzo tour non disponibile per PayPal.' });
+        return;
+      }
+      unitPriceCents = resolvedUnitPrice;
+    }
+
+    let totalPriceCents = Number(intent.total_price_cents);
+    if (!Number.isInteger(totalPriceCents) || totalPriceCents < 0) {
+      totalPriceCents = unitPriceCents * guestsNumber;
+    }
+    if (!Number.isInteger(totalPriceCents) || totalPriceCents <= 0) {
+      res.status(409).json({ message: 'Importo ordine PayPal non valido.' });
+      return;
+    }
+
+    const amountValue = (totalPriceCents / 100).toFixed(2);
+    const orderPayload = await paypalApiRequest('/v2/checkout/orders', {
+      method: 'POST',
+      body: {
+        intent: 'CAPTURE',
+        purchase_units: [
+          {
+            reference_id: `booking-intent-${intent.id}`,
+            custom_id: String(intent.id),
+            description: resolveTourLabel(intent.tour_id),
+            amount: {
+              currency_code: 'EUR',
+              value: amountValue,
+            },
+          },
+        ],
+        application_context: {
+          shipping_preference: 'NO_SHIPPING',
+          user_action: 'PAY_NOW',
+          brand_name: 'TUK TUK ROMA',
+        },
+      },
+    });
+
+    res.status(201).json({
+      orderId: orderPayload.id,
+      intentId: intent.id,
+      status: orderPayload.status || '',
+      totalPriceEur: centsToEur(totalPriceCents),
+      currency: 'EUR',
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      message: error.message || 'Errore durante la creazione ordine PayPal.',
+    });
+  }
+});
+
+app.post('/api/paypal/orders/:orderId/capture', async (req, res) => {
+  try {
+    ensurePayPalIsEnabled();
+
+    const orderId = String(req.params?.orderId || '').trim();
+    if (!orderId) {
+      res.status(400).json({ message: 'Order ID PayPal mancante.' });
+      return;
+    }
+
+    const capturePayload = await paypalApiRequest(`/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {
+      method: 'POST',
+      body: {},
+    });
+    const capture = capturePayload?.purchase_units?.[0]?.payments?.captures?.[0];
+    const captureStatus = String(capture?.status || '').toUpperCase();
+    if (!capture?.id || captureStatus !== 'COMPLETED') {
+      res.status(409).json({ message: 'Pagamento PayPal non completato.' });
+      return;
+    }
+
+    res.json({
+      orderId: capturePayload?.id || orderId,
+      status: captureStatus,
+      captureId: capture.id,
+      payerEmail: capturePayload?.payer?.email_address || '',
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      message: error.message || 'Errore durante la cattura PayPal.',
+    });
+  }
 });
 
 app.post('/api/admin/login', (req, res) => {
@@ -970,7 +1213,11 @@ app.get('/api/availability', async (req, res) => {
 
     res.json({ month, days });
   } catch (error) {
-    res.status(500).json({ message: 'Errore durante il calcolo disponibilita.' });
+    console.error('Availability API error:', error);
+    const message = isProduction
+      ? 'Errore durante il calcolo disponibilita.'
+      : `Errore durante il calcolo disponibilita: ${error.message}`;
+    res.status(500).json({ message });
   }
 });
 
@@ -1068,8 +1315,8 @@ app.post('/api/booking-intents', async (req, res) => {
   const dayDate = new Date(`${date}T00:00:00`);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  if (dayDate < today) {
-    res.status(400).json({ message: 'Non puoi prenotare nel passato.' });
+  if (dayDate <= today) {
+    res.status(400).json({ message: 'Le prenotazioni sono disponibili da domani in poi.' });
     return;
   }
 
@@ -1170,7 +1417,11 @@ app.post('/api/bookings/confirm', async (req, res) => {
   }
   const normalizedPaymentReference = paymentReference
     ? String(paymentReference).trim()
-    : `${normalizedPaymentProvider.toUpperCase()}_${Date.now()}`;
+    : (normalizedPaymentProvider === 'mock' ? `${normalizedPaymentProvider.toUpperCase()}_${Date.now()}` : '');
+  if (normalizedPaymentProvider === 'paypal' && !normalizedPaymentReference) {
+    res.status(400).json({ message: 'Riferimento pagamento PayPal mancante.' });
+    return;
+  }
 
   const connection = await pool.connect();
   try {
@@ -1330,10 +1581,13 @@ app.post('/api/bookings/confirm', async (req, res) => {
 async function startServer() {
   try {
     if (!isAdminAuthConfigured()) {
-      throw new Error('Config admin mancante: imposta ADMIN_EMAIL e ADMIN_PASSWORD_HASH.');
+      console.warn('Admin auth non configurata: login admin disabilitato finché non imposti ADMIN_EMAIL e ADMIN_PASSWORD_HASH.');
     }
     if (adminLegacyPassword && !adminPasswordHash) {
       console.warn('Admin auth: stai usando ADMIN_PASSWORD in chiaro. Usa ADMIN_PASSWORD_HASH.');
+    }
+    if (!isPayPalConfigured) {
+      console.warn('PayPal non configurato: imposta PAYPAL_CLIENT_ID e PAYPAL_CLIENT_SECRET per abilitare i pagamenti reali.');
     }
 
     await ensureCustomerColumns();
