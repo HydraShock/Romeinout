@@ -1,0 +1,60 @@
+
+> tuk-tuk-booking@0.1.0 start
+> concurrently -k -n client,server -c green,cyan "react-scripts start" "node server/index.js"
+
+[server] [dotenv@17.3.1] injecting env (21) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[server] Booking API attiva su http://localhost:4000
+[client] (node:32060) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[client] (Use `node --trace-deprecation ...` to show where the warning was created)
+[client] (node:32060) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[client] Starting the development server...
+[client] 
+[client] Compiled successfully!
+[client] 
+[client] You can now view tuk-tuk-booking in the browser.
+[client] 
+[client]   Local:            http://localhost:3000
+[client]   On Your Network:  http://192.168.56.1:3000
+[client] 
+[client] Note that the development build is not optimized.
+[client] To create a production build, use npm run build.
+[client] 
+[client] webpack compiled [1m[32msuccessfully[39m[22m
+[client] No issues found.
+[client] Compiling...
+[client] Compiled successfully!
+[client] webpack compiled [1m[32msuccessfully[39m[22m
+[client] No issues found.
+[client] Failed to compile.
+[client] 
+[client] Module not found: Error: Can't resolve './CtaMarbleTriptych.module.css' in 'c:\Users\HYDRA\tuk-tuk-booking4\src\components'
+[client] [1m[31mERROR[39m[22m in [1m./src/components/CtaMarbleTriptych.tsx[39m[22m [1m[32m4:0-52[39m[22m
+[client] [1mModule [1m[31mnot found[39m[22m[1m: [1m[31mError[39m[22m[1m: Can't resolve './CtaMarbleTriptych.module.css' in 'c:\Users\HYDRA\tuk-tuk-booking4\src\components'[39m[22m
+[client] 
+[client] webpack compiled with [1m[31m1 error[39m[22m
+[client] No issues found.
+[client] Compiling...
+[client] Compiled successfully!
+[client] webpack compiled [1m[32msuccessfully[39m[22m
+[client] No issues found.
+[client] Compiling...
+[client] Compiled successfully!
+[client] webpack compiled [1m[32msuccessfully[39m[22m
+[client] No issues found.
+[client] Compiling...
+[client] Compiled successfully!
+[client] webpack compiled [1m[32msuccessfully[39m[22m
+[client] No issues found.
+[client] Compiled successfully!
+[client] webpack compiled [1m[32msuccessfully[39m[22m
+[client] No issues found.
+[client] Compiling...
+[client] Compiled successfully!
+[client] webpack compiled [1m[32msuccessfully[39m[22m
+[client] No issues found.
+[client] ^C
+[server] ^C
+[client] react-scripts start exited with code 3221225786
+--> Sending SIGTERM to other processes..
+[server] node server/index.js exited with code 3221225786
+^C

@@ -1,0 +1,4 @@
+Savepoint before NavbarDockRome.
+
+Undo command:
+powershell -ExecutionPolicy Bypass -File .codex-savepoints/navbar-dock-rome-pre-20260221-1602/UNDO.ps1

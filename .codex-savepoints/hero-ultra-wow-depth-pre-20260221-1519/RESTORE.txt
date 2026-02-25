@@ -1,0 +1,4 @@
+Restore point created before HeroUltraWow changes.
+
+Undo command:
+powershell -ExecutionPolicy Bypass -File .codex-savepoints/hero-ultra-wow-depth-pre-20260221-1519/UNDO.ps1

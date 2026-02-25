@@ -1197,7 +1197,7 @@ body {
   width: 100%;
   border: 1px solid #ecd2af;
   border-radius: 14px;
-  background: linear-gradient(145deg, #f8f1df 0%, #f2e6cb 58%, #ecdcb8 100%);
+  background: #f3ede1;
   padding: 12px 12px 10px;
   text-align: left;
   cursor: pointer;
@@ -1935,33 +1935,9 @@ body {
 }
 
 .footer-cta {
-  --footer-map-image: none;
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   margin-top: clamp(38px, 5vw, 86px);
   padding: 0;
-  background: #f8f2ed;
-}
-
-.footer-cta::before {
-  display: none;
-}
-
-.footer-cta::after {
-  display: none;
-}
-
-@media (max-width: 1024px) {
-  .footer-cta::before {
-    background-size: cover;
-  }
-}
-
-@media (max-width: 640px) {
-  .footer-cta::before {
-    background-size: cover;
-  }
 }
 
 .footer-map-section {
@@ -1974,7 +1950,7 @@ body {
   padding: clamp(20px, 2.2vw, 34px) clamp(10px, 2vw, 18px) clamp(14px, 2vw, 24px);
   border-radius: 0;
   overflow: visible;
-  background: #080302;
+  background: #2a0505;
 }
 
 .footer-map-section::before {
@@ -2000,7 +1976,7 @@ body {
   background:
     linear-gradient(
       to bottom,
-      rgba(8, 3, 2, 0.82),
+      rgba(20, 5, 5, 0.75),
       rgba(15, 3, 3, 0.85)
     ),
     radial-gradient(circle at 50% 54%, rgba(255, 122, 26, 0.32), rgba(255, 122, 26, 0.08) 34%, rgba(255, 122, 26, 0) 66%),
@@ -2090,121 +2066,6 @@ body {
 .footer-map-float-satisfaction {
   right: 22px;
   bottom: 96px;
-}
-
-.footer-map-feature {
-  position: absolute;
-  z-index: 6;
-  width: clamp(210px, 21vw, 318px);
-  pointer-events: none;
-}
-
-.footer-map-feature-art {
-  margin: 0;
-  line-height: 0;
-  background: transparent;
-}
-
-.footer-map-feature-art img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 26px rgba(19, 8, 6, 0.35));
-}
-
-.footer-map-feature-reviews {
-  top: clamp(30px, 4vw, 58px);
-  right: clamp(12px, 2.6vw, 44px);
-}
-
-.footer-map-feature-tourists {
-  left: clamp(10px, 1.8vw, 24px);
-  top: 52%;
-  transform: translateY(-50%);
-}
-
-.footer-map-feature-review-meta {
-  padding: 12px 14px 13px;
-  background: linear-gradient(180deg, rgba(255, 251, 246, 0.96) 0%, rgba(255, 241, 224, 0.98) 100%);
-}
-
-.footer-map-feature-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(255, 236, 205, 0.86);
-  color: #c35d00;
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.015em;
-  text-transform: uppercase;
-}
-
-.footer-map-feature-review-meta strong {
-  display: block;
-  margin-top: 8px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1.86rem;
-  line-height: 1;
-  color: #2c1b16;
-}
-
-.footer-map-feature-review-meta small {
-  display: block;
-  margin-top: 4px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  color: #775a54;
-}
-
-.footer-map-feature-tourists-card {
-  display: inline-flex;
-  align-items: center;
-  gap: 11px;
-  margin: 10px;
-  border-radius: 18px;
-  padding: 12px 14px;
-  background: #f8f2ed;
-  box-shadow:
-    0 10px 24px rgba(12, 7, 4, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.85) inset;
-}
-
-.footer-map-feature-tourists-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  background: #d6f3dd;
-  color: #11a954;
-}
-
-.footer-map-feature-tourists-icon svg {
-  width: 22px;
-  height: 22px;
-}
-
-.footer-map-feature-tourists-copy {
-  display: grid;
-  gap: 1px;
-}
-
-.footer-map-feature-tourists-copy strong {
-  font-family: 'Poppins', sans-serif;
-  font-size: 2.05rem;
-  line-height: 1;
-  color: #2b1f1a;
-}
-
-.footer-map-feature-tourists-copy small {
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.98rem;
-  color: #735f58;
 }
 
 .footer-map-head {
@@ -2541,339 +2402,15 @@ body {
 }
 
 .gradient-demo-bg {
-  --cta-seam-color: #080302;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
   height: 760px;
   min-height: 760px;
-  background: #170807;
-}
-
-.footer-cta .gradient-demo-bg {
-  z-index: 2;
-  background: transparent;
-  height: auto;
-  min-height: 0;
-  overflow: visible;
-}
-
-.footer-cta .gradient-demo-bg::before,
-.footer-cta .gradient-demo-bg::after {
-  display: none;
-}
-
-.footer-cta .gradient-demo-overlay {
-  position: relative;
-  inset: auto;
-  isolation: isolate;
-}
-
-.footer-cta .gradient-demo-overlay > * {
-  position: relative;
-  z-index: 3;
-}
-
-.footer-cta .gradient-demo-overlay::before {
-  display: none;
-}
-
-.footer-cta .gradient-demo-overlay::after {
-  display: none;
-}
-
-.footer-cta .gradient-demo-bg .bg-grad-base,
-.footer-cta .gradient-demo-bg .bg-grad-first,
-.footer-cta .gradient-demo-bg .bg-grad-second,
-.footer-cta .gradient-demo-bg .bg-grad-third,
-.footer-cta .gradient-demo-bg .bg-grad-fourth,
-.footer-cta .gradient-demo-bg .bg-grad-fifth,
-.footer-cta .gradient-demo-bg .bg-grad-core,
-.footer-cta .gradient-demo-bg .bg-grad-particles,
-.footer-cta .gradient-demo-bg .bg-grad-pointer {
-  display: none !important;
-}
-
-.gradient-demo-bg::before {
-  display: none;
-}
-
-.gradient-demo-bg::after {
-  display: none;
-}
-
-.gradient-demo-bg .bg-grad-layer {
-  inset: 0;
-}
-
-.gradient-demo-bg .bg-grad-base {
-  background: url('./assets/textures/sfondo.png') center / cover no-repeat;
-  filter: none;
-}
-
-.gradient-demo-bg .bg-grad-first,
-.gradient-demo-bg .bg-grad-second,
-.gradient-demo-bg .bg-grad-third,
-.gradient-demo-bg .bg-grad-fourth,
-.gradient-demo-bg .bg-grad-fifth,
-.gradient-demo-bg .bg-grad-core {
-  display: none;
-}
-
-.gradient-demo-bg .bg-grad-first {
-  background-image: url('./assets/textures/marble-veins.webp');
-  background-size: 980px auto;
-  background-position: 42% 38%;
-  background-repeat: repeat;
-  mix-blend-mode: multiply;
-  opacity: 0.11;
-  animation: none;
-}
-
-.gradient-demo-bg .bg-grad-second {
-  inset: auto 0 0;
-  height: 40%;
-  background-image:
-    radial-gradient(circle at 18% 28%, rgba(255, 245, 231, 0.14) 0 0.52px, transparent 0.9px),
-    radial-gradient(circle at 46% 54%, rgba(255, 214, 176, 0.12) 0 0.5px, transparent 0.9px),
-    radial-gradient(circle at 76% 36%, rgba(255, 238, 218, 0.13) 0 0.52px, transparent 0.9px);
-  background-size: 3px 3px, 4px 4px, 5px 5px;
-  opacity: 0.045;
-  mix-blend-mode: soft-light;
-  mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.94) 0%,
-    rgba(0, 0, 0, 0.88) 58%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  animation: none;
-}
-
-.gradient-demo-bg .bg-grad-third {
-  inset: auto 0 0;
-  height: clamp(220px, 24vw, 320px);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(42, 5, 5, 0) 0%,
-      rgba(87, 36, 24, 0.34) 34%,
-      rgba(62, 23, 17, 0.72) 66%,
-      rgba(42, 5, 5, 0.98) 100%
-    );
-  opacity: 1;
-  pointer-events: none;
-  animation: none;
-}
-
-.gradient-demo-bg .bg-grad-fourth {
-  background-image:
-    radial-gradient(circle at 10% 76%, rgba(255, 208, 145, 0.48) 0 0.9px, transparent 1.4px),
-    radial-gradient(circle at 20% 88%, rgba(255, 192, 131, 0.44) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 34% 82%, rgba(255, 178, 118, 0.42) 0 0.9px, transparent 1.5px),
-    radial-gradient(circle at 50% 92%, rgba(255, 210, 152, 0.46) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 66% 84%, rgba(255, 184, 121, 0.4) 0 0.9px, transparent 1.4px),
-    radial-gradient(circle at 79% 90%, rgba(255, 212, 156, 0.45) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 90% 78%, rgba(255, 175, 112, 0.4) 0 0.9px, transparent 1.4px);
-  background-size: 220px 160px, 250px 170px, 230px 160px, 280px 190px, 260px 180px, 240px 170px, 220px 160px;
-  opacity: 0.22;
-  filter: blur(0.4px);
-  mix-blend-mode: screen;
-  mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.9) 24%,
-    rgba(0, 0, 0, 0.88) 72%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  animation: none;
-}
-
-.gradient-demo-bg .bg-grad-fifth {
-  display: none;
-}
-
-.gradient-demo-bg .bg-grad-core {
-  display: none;
-}
-
-.gradient-demo-bg .bg-grad-particles {
-  display: block;
-  inset: 0;
-  z-index: 3;
-  opacity: 0.24;
-  mix-blend-mode: soft-light;
-  animation: ready-roma-particles-pan 56s linear infinite;
-  -webkit-mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.98) 0%,
-    rgba(0, 0, 0, 0.98) 20%,
-    rgba(0, 0, 0, 0.36) 34%,
-    rgba(0, 0, 0, 0.08) 52%,
-    rgba(0, 0, 0, 0) 72%
-  );
-  mask-image: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.98) 0%,
-    rgba(0, 0, 0, 0.98) 20%,
-    rgba(0, 0, 0, 0.36) 34%,
-    rgba(0, 0, 0, 0.08) 52%,
-    rgba(0, 0, 0, 0) 72%
-  );
-}
-
-.gradient-demo-bg .bg-grad-particle {
-  width: calc(var(--particle-size) * 0.14);
-  height: calc(var(--particle-size) * 0.14);
-  opacity: calc(var(--particle-opacity) * 0.18);
-  filter: blur(1.8px);
-  animation:
-    ready-roma-particle-drift calc(var(--particle-duration) * 3.4) linear infinite,
-    ready-roma-particle-flicker calc(var(--particle-duration) * 2.6) ease-in-out infinite;
-}
-
-.gradient-demo-bg .bg-grad-pointer {
-  display: none;
 }
 
 .gradient-demo-overlay {
   position: absolute;
   inset: 0;
   z-index: 10;
-  isolation: isolate;
   pointer-events: auto;
-}
-
-.gradient-demo-overlay::before {
-  display: none;
-}
-
-.gradient-demo-overlay::after {
-  display: none;
-}
-
-@keyframes ready-roma-cinematic-sweep {
-  0% {
-    transform: translate3d(-120%, 0, 0);
-  }
-  48% {
-    transform: translate3d(-12%, 0, 0);
-  }
-  70% {
-    transform: translate3d(28%, 0, 0);
-  }
-  100% {
-    transform: translate3d(120%, 0, 0);
-  }
-}
-
-@keyframes ready-roma-core-pulse {
-  0% {
-    opacity: 0.62;
-    transform: scale(0.96);
-  }
-  50% {
-    opacity: 0.82;
-    transform: scale(1.04);
-  }
-  100% {
-    opacity: 0.66;
-    transform: scale(0.98);
-  }
-}
-
-@keyframes ready-roma-glow-breathe {
-  0% {
-    opacity: 0.48;
-    transform: translate3d(-2%, -1%, 0) scale(0.98);
-  }
-  50% {
-    opacity: 0.62;
-    transform: translate3d(2%, 1%, 0) scale(1.04);
-  }
-  100% {
-    opacity: 0.5;
-    transform: translate3d(-1%, 0, 0) scale(1);
-  }
-}
-
-@keyframes ready-roma-spark-drift {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(1.2%, -0.8%, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes ready-roma-veins-drift {
-  0% {
-    background-position: 42% 38%;
-  }
-  50% {
-    background-position: 46% 40%;
-  }
-  100% {
-    background-position: 42% 38%;
-  }
-}
-
-@keyframes ready-roma-particles-pan {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(-1.4%, -0.6%, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes ready-roma-particle-drift {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(10px, -8px, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes ready-roma-particle-flicker {
-  0% {
-    opacity: calc(var(--particle-opacity) * 0.38);
-  }
-  50% {
-    opacity: calc(var(--particle-opacity) * 0.46);
-  }
-  100% {
-    opacity: calc(var(--particle-opacity) * 0.38);
-  }
-}
-
-@keyframes ready-roma-front-dust-drift {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(-1.2%, -0.8%, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gradient-demo-bg .bg-grad-particles,
-  .gradient-demo-bg .bg-grad-particle,
-  .gradient-demo-overlay::after {
-    animation: none !important;
-  }
 }
 
 .ready-roma-bg {
@@ -2882,65 +2419,17 @@ body {
 
 .ready-roma-content {
   position: relative;
-  z-index: 2;
   min-height: 100%;
-  width: min(1200px, calc(100% - 28px));
+  width: min(1200px, 100%);
   margin: 0 auto;
-  padding: 92px 22px 96px;
+  padding: 92px 20px 86px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: #4a2f1d;
+  color: #fff;
   font-family: 'Poppins', sans-serif;
   overflow: hidden;
-  border-radius: clamp(24px, 2.8vw, 34px);
-  border: 1px solid rgba(154, 111, 73, 0.5);
-  background:
-    linear-gradient(164deg, rgba(255, 247, 235, 0.88) 0%, rgba(242, 227, 204, 0.82) 52%, rgba(229, 208, 179, 0.86) 100%),
-    url('./assets/textures/marble-base.webp') center / cover no-repeat;
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.35),
-    0 24px 44px rgba(20, 9, 6, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -10px 30px rgba(0, 0, 0, 0.12),
-    inset 0 0 0 1px rgba(255, 240, 214, 0.62);
-}
-
-.ready-roma-content::before {
-  content: '';
-  position: absolute;
-  inset: 12px;
-  border-radius: inherit;
-  border: 1px solid rgba(150, 108, 73, 0.34);
-  background:
-    linear-gradient(180deg, rgba(255, 219, 166, 0.2) 0%, rgba(255, 219, 166, 0) 26%),
-    linear-gradient(90deg, rgba(255, 193, 121, 0.14) 0%, rgba(255, 193, 121, 0) 24%);
-  box-shadow: inset 0 0 0 1px rgba(255, 244, 222, 0.5);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.ready-roma-content::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    url('./assets/textures/marble-veins.webp'),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
-  background-position: center, 0 0;
-  background-size: 920px auto, 180px 180px;
-  background-repeat: repeat, repeat;
-  opacity: 0.13;
-  mix-blend-mode: multiply;
-  filter: contrast(1.12) saturate(1.03);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.ready-roma-content > * {
-  position: relative;
-  z-index: 1;
 }
 
 .ready-roma-icon {
@@ -2949,12 +2438,10 @@ body {
   border-radius: 22px;
   display: grid;
   place-items: center;
-  color: #8d4f27;
-  background: linear-gradient(160deg, rgba(252, 241, 221, 0.96), rgba(237, 216, 184, 0.92));
-  border: 1px solid rgba(154, 111, 75, 0.56);
-  box-shadow:
-    0 12px 22px rgba(92, 57, 31, 0.24),
-    inset 0 1px 0 rgba(255, 252, 244, 0.86);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow: 0 12px 26px rgba(70, 8, 8, 0.26), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .ready-roma-icon svg {
@@ -2968,12 +2455,12 @@ body {
   line-height: 1.02;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #3d2617;
+  color: #ffffff;
   max-width: 96%;
   text-wrap: balance;
   text-shadow:
-    0 1px 0 rgba(255, 247, 233, 0.78),
-    0 10px 20px rgba(93, 61, 36, 0.24);
+    0 0 18px rgba(255, 255, 255, 0.7),
+    0 8px 36px rgba(255, 255, 255, 0.34);
 }
 
 .ready-roma-lead {
@@ -2982,8 +2469,7 @@ body {
   font-size: clamp(1.55rem, 2.3vw, 2.45rem);
   line-height: 1.18;
   font-weight: 700;
-  color: #5c3b27;
-  text-shadow: 0 1px 0 rgba(255, 248, 234, 0.68);
+  text-shadow: 0 3px 18px rgba(255, 255, 255, 0.18);
 }
 
 .ready-roma-actions {
@@ -3026,33 +2512,25 @@ body {
 }
 
 .ready-btn-primary {
-  background: linear-gradient(160deg, #f7ead2 0%, #e9d0ad 100%);
-  color: #8f2f1b;
-  border: 1px solid rgba(157, 104, 65, 0.46);
-  box-shadow:
-    0 14px 24px rgba(103, 65, 36, 0.2),
-    inset 0 1px 0 rgba(255, 251, 242, 0.8);
+  background: #f3eccf;
+  color: #de0500;
+  box-shadow: 0 16px 30px rgba(118, 24, 5, 0.24);
 }
 
 .ready-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 18px 30px rgba(103, 65, 36, 0.3),
-    inset 0 1px 0 rgba(255, 251, 242, 0.92);
+  box-shadow: 0 22px 36px rgba(118, 24, 5, 0.34);
 }
 
 .ready-btn-ghost {
-  background: linear-gradient(145deg, #8d5c33 0%, #5e3920 100%);
-  color: #f6e6ca;
-  border: 1px solid rgba(200, 152, 98, 0.52);
-  box-shadow:
-    0 14px 24px rgba(55, 31, 15, 0.32),
-    inset 0 1px 0 rgba(233, 192, 137, 0.34);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.58);
 }
 
 .ready-btn-ghost:hover {
   transform: translateY(-2px);
-  filter: brightness(1.08) saturate(1.06);
+  filter: brightness(1.08);
 }
 
 .ready-roma-contacts {
@@ -3073,12 +2551,10 @@ body {
   padding: 12px 18px;
   border-radius: 18px;
   text-decoration: none;
-  color: #4a2d1b;
-  background: linear-gradient(158deg, rgba(246, 231, 207, 0.96) 0%, rgba(233, 211, 181, 0.94) 100%);
-  border: 1px solid rgba(157, 113, 73, 0.46);
-  box-shadow:
-    0 10px 20px rgba(95, 60, 34, 0.2),
-    inset 0 1px 0 rgba(255, 250, 238, 0.84);
+  color: #fff;
+  background: rgba(255, 209, 171, 0.24);
+  border: 1px solid rgba(255, 224, 198, 0.46);
+  box-shadow: 0 10px 22px rgba(93, 16, 9, 0.22);
   max-width: calc(50% - 8px);
   min-width: 260px;
 }
@@ -3089,8 +2565,8 @@ body {
   border-radius: 999px;
   display: inline-grid;
   place-items: center;
-  color: #f8ead2;
-  background: linear-gradient(150deg, #9e6438 0%, #6a4124 100%);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.26);
 }
 
 .ready-contact-icon svg {
@@ -3104,7 +2580,6 @@ body {
   font-weight: 600;
   display: block;
   text-align: left;
-  color: #7a563e;
 }
 
 .ready-contact strong {
@@ -3112,7 +2587,6 @@ body {
   font-weight: 700;
   display: block;
   text-align: left;
-  color: #3f2818;
 }
 
 .footer-main {
@@ -3262,14 +2736,6 @@ body {
     min-height: 700px;
   }
 
-  .gradient-demo-bg .bg-grad-first {
-    opacity: 0.09;
-  }
-
-  .gradient-demo-bg .bg-grad-fourth {
-    opacity: 0.2;
-  }
-
   .ready-roma-content {
     padding: 78px 20px 80px;
   }
@@ -3288,23 +2754,6 @@ body {
   .gradient-demo-bg {
     height: 620px;
     min-height: 620px;
-  }
-
-  .gradient-demo-bg::after {
-    height: clamp(240px, 44vw, 320px);
-  }
-
-  .gradient-demo-bg .bg-grad-third {
-    height: clamp(190px, 32vw, 240px);
-  }
-
-  .gradient-demo-bg .bg-grad-fifth {
-    height: clamp(150px, 24vw, 210px);
-    opacity: 0.38;
-  }
-
-  .gradient-demo-bg .bg-grad-fourth {
-    opacity: 0.16;
   }
 
   .ready-roma-content {
@@ -3475,28 +2924,6 @@ body {
   .footer-map-float-tourists,
   .footer-map-float-satisfaction {
     display: none;
-  }
-
-  .footer-map-feature-tourists {
-    display: none;
-  }
-
-  .footer-map-feature-reviews {
-    top: clamp(24px, 4.4vw, 44px);
-    right: clamp(12px, 2.4vw, 22px);
-    width: clamp(188px, 31vw, 248px);
-  }
-
-  .footer-map-feature-review-meta {
-    padding: 10px 12px 11px;
-  }
-
-  .footer-map-feature-review-meta strong {
-    font-size: clamp(1.42rem, 2.8vw, 1.7rem);
-  }
-
-  .footer-map-feature-review-meta small {
-    font-size: 0.88rem;
   }
 
   .footer-map-head h3 {
@@ -3922,10 +3349,6 @@ body {
     display: none;
   }
 
-  .footer-map-feature {
-    display: none;
-  }
-
   .footer-map-head {
     width: min(640px, 96%);
     margin-bottom: 12px;
@@ -4253,24 +3676,6 @@ body {
     min-height: 520px;
   }
 
-  .gradient-demo-bg::after {
-    height: clamp(240px, 56vw, 300px);
-  }
-
-  .gradient-demo-bg .bg-grad-first,
-  .gradient-demo-bg .bg-grad-fourth {
-    display: none;
-  }
-
-  .gradient-demo-bg .bg-grad-third {
-    height: clamp(180px, 46vw, 220px);
-  }
-
-  .gradient-demo-bg .bg-grad-fifth {
-    height: clamp(140px, 34vw, 180px);
-    opacity: 0.24;
-  }
-
   .ready-roma-content {
     padding: 44px 10px 108px;
   }
@@ -4422,7 +3827,7 @@ body {
 .booking-steps {
   margin: 38px auto 34px;
   padding: 0;
-  max-width: min(100%, 680px);
+  max-width: min(100%, 560px);
   list-style: none;
   display: flex;
   justify-content: center;
@@ -5062,52 +4467,6 @@ body {
   font-size: 1rem;
 }
 
-.booking-stage-panel-success {
-  gap: 18px;
-}
-
-.booking-success-card {
-  position: relative;
-  overflow: hidden;
-  animation: bookingSuccessCardBounce 0.62s cubic-bezier(0.19, 1.08, 0.38, 1) both;
-}
-
-.booking-success-card::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 5px;
-  background: linear-gradient(90deg, #11c35b 0%, #18a54f 42%, #f68c00 100%);
-}
-
-.booking-success-icon {
-  animation: bookingConfirmBounce 0.78s cubic-bezier(0.22, 1.2, 0.36, 1) both;
-}
-
-.booking-success-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  margin-bottom: 10px;
-  padding: 0 14px;
-  border-radius: 999px;
-  background: #e8f9ef;
-  color: #12733f;
-  border: 1px solid #bde9ce;
-  box-shadow: 0 10px 18px rgba(18, 130, 69, 0.14);
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.86rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  animation: bookingSuccessBadgePop 0.58s cubic-bezier(0.18, 1, 0.32, 1) both;
-  animation-delay: 0.08s;
-}
-
-.booking-nav-row-success {
-  width: min(430px, 100%);
-}
-
 .booking-confirm-row {
   text-align: left;
   display: grid;
@@ -5238,34 +4597,6 @@ body {
   box-shadow: 0 10px 18px rgba(17, 24, 39, 0.09);
 }
 
-.booking-payment-methods {
-  display: grid;
-  gap: 10px;
-}
-
-.booking-payment-method {
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
-}
-
-.booking-payment-method:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
-.booking-payment-method.selected {
-  border-color: rgba(5, 82, 210, 0.26);
-  box-shadow:
-    0 14px 22px rgba(17, 24, 39, 0.14),
-    0 0 0 1px rgba(5, 82, 210, 0.16);
-  background: #ffffff;
-}
-
-.booking-payment-method:disabled {
-  opacity: 0.72;
-  cursor: not-allowed;
-}
-
 .pp-badge {
   display: inline-flex;
   align-items: center;
@@ -5305,27 +4636,6 @@ body {
 .booking-paypal-btn:disabled {
   opacity: 0.72;
   cursor: wait;
-}
-
-.booking-nav-row-paypal {
-  align-items: center;
-}
-
-.booking-paypal-buttons-shell {
-  width: 100%;
-  min-height: 52px;
-  display: flex;
-  align-items: center;
-}
-
-.booking-paypal-buttons {
-  width: 100%;
-}
-
-.booking-paypal-buttons > div,
-.booking-paypal-buttons iframe {
-  width: 100% !important;
-  max-width: 100% !important;
 }
 
 @keyframes bookingFadeOutLeft {
@@ -5384,40 +4694,6 @@ body {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes bookingSuccessCardBounce {
-  0% {
-    opacity: 0;
-    transform: translateY(26px) scale(0.96);
-  }
-
-  62% {
-    opacity: 1;
-    transform: translateY(-4px) scale(1.01);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes bookingSuccessBadgePop {
-  0% {
-    opacity: 0;
-    transform: scale(0.82);
-  }
-
-  64% {
-    opacity: 1;
-    transform: scale(1.08);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -5605,10 +4881,6 @@ body {
     border-radius: 18px;
   }
 
-  .booking-paypal-buttons-shell {
-    min-height: 46px;
-  }
-
   .booking-payment-icon {
     width: 58px;
     height: 58px;
@@ -5620,13 +4892,6 @@ body {
 
   .booking-payment-card h3 {
     font-size: 1.8rem;
-  }
-
-  .booking-success-pill {
-    min-height: 30px;
-    margin-bottom: 8px;
-    padding: 0 12px;
-    font-size: 0.78rem;
   }
 
   .booking-confirm-icon {
@@ -5873,12 +5138,6 @@ body {
   .booking-payment-card p {
     font-size: 0.88rem;
     margin: 6px 0 14px;
-  }
-
-  .booking-success-pill {
-    min-height: 28px;
-    padding: 0 11px;
-    font-size: 0.72rem;
   }
 
   .booking-paypal-method {
@@ -6207,10 +5466,6 @@ body {
     padding: 10px;
   }
 
-  .booking-paypal-buttons-shell {
-    min-height: 42px;
-  }
-
   .pp-badge {
     min-width: 66px;
     min-height: 26px;
@@ -6231,13 +5486,6 @@ body {
   .booking-customer-card .booking-strong-title,
   .booking-payment-card h3 {
     font-size: 1.08rem;
-  }
-
-  .booking-success-pill {
-    min-height: 24px;
-    margin-bottom: 6px;
-    padding: 0 8px;
-    font-size: 0.64rem;
   }
 
   .booking-primary-cta,

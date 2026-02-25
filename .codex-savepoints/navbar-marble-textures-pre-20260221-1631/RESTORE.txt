@@ -1,0 +1,4 @@
+Restore point before marble texture swap.
+
+Undo command:
+powershell -ExecutionPolicy Bypass -File .codex-savepoints/navbar-marble-textures-pre-20260221-1631/UNDO.ps1

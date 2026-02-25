@@ -31,7 +31,7 @@ const TRANSLATIONS = {
     'nav.gallery': 'Galleria',
     'nav.pricing': 'Prezzi',
     'nav.about': 'Chi siamo',
-    'nav.contact': 'Contattaci',
+    'nav.contact': 'Contatti',
     'nav.bookNow': 'Prenota Ora',
     'lang.english': 'Inglese',
     'lang.italian': 'Italiano',
