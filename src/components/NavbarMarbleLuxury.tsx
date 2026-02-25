@@ -463,6 +463,11 @@ export default function NavbarMarbleLuxury() {
               <LanguageSwitcher isScrolled={isScrolled} inDrawer />
             </div>
 
+            <a href="#prenota" className="marble-nav-mobile-cta" onClick={handleCtaClick}>
+              <span className="marble-nav-mobile-cta-label">{t('nav.bookNow')}</span>
+              <span aria-hidden="true">{'\u2192'}</span>
+            </a>
+
             {NAV_ITEMS.map((item) => (
               <a
                 key={`mobile-${item.id}`}

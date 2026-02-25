@@ -7,7 +7,6 @@ import Cursor from './components/ui/Cursor';
 import ItineraryDrawer from './components/ItineraryDrawer';
 import NavbarMarbleLuxury from './components/NavbarMarbleLuxury';
 import HeroFooterScene from './components/HeroFooterScene';
-import Preloader from './components/Preloader';
 import BackgroundArtLayer from './components/BackgroundArtLayer';
 import HeroAtmosphere from './components/HeroAtmosphere';
 import CtaMarbleTriptych from './components/CtaMarbleTriptych';
@@ -264,16 +263,6 @@ function TourShowcaseCard({ tour, onViewRoute }) {
 
 function App() {
   const { lang, translateText } = useLanguage();
-  const [showPreloader, setShowPreloader] = useState(() => {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-    try {
-      return window.sessionStorage.getItem('tuktuk-preloader-seen') !== '1';
-    } catch (error) {
-      return true;
-    }
-  });
 
   const [date, setDate] = useState(() => getTomorrowStart());
   const [timeSlot, setTimeSlot] = useState('');
@@ -312,15 +301,6 @@ function App() {
   const paypalButtonsRef = useRef(null);
   const paypalButtonsRenderedRef = useRef(false);
   const paypalIntentIdRef = useRef('');
-
-  const handlePreloaderFinish = useCallback(() => {
-    try {
-      window.sessionStorage.setItem('tuktuk-preloader-seen', '1');
-    } catch (error) {
-      // Ignore storage errors in private mode/restricted browsers.
-    }
-    setShowPreloader(false);
-  }, []);
 
   const smoothScrollToHash = useCallback((hash) => {
     if (typeof window === 'undefined') {
@@ -1224,8 +1204,6 @@ function App() {
 
   return (
     <>
-      {showPreloader ? <Preloader duration={1600} onFinish={handlePreloaderFinish} /> : null}
-
       <div className="page">
         <BackgroundArtLayer />
         <Cursor />

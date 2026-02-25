@@ -116,6 +116,9 @@ export default function CtaMarbleTriptych({
   return (
     <section className={`${styles.ctaWrap} ${className}`}>
       <div className={styles.bgSoft} />
+      <figure className={`${styles.sideSticker} ${styles.sideStickerLeft}`} aria-hidden="true">
+        <img src="/bg/details/rome-detail-colosseo.png" alt="" />
+      </figure>
       <div className={styles.triptych}>
         <div className={`${styles.sidePanel} ${styles.left}`} aria-hidden="true" />
         <div className={`${styles.sidePanel} ${styles.right}`} aria-hidden="true" />
@@ -141,8 +144,6 @@ export default function CtaMarbleTriptych({
               Chiama Ora
             </a>
           </div>
-          <small className={styles.microcopy}>Risposta rapida su WhatsApp</small>
-
           <div className={styles.metaRow}>
             <div className={styles.contactCard}>
               <span className={styles.contactIcon}>

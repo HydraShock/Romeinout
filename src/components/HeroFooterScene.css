@@ -835,22 +835,23 @@
   .hero-footer-vehicle {
     left: 50%;
     right: auto;
-    bottom: -12%;
-    width: clamp(370px, 96vw, 700px);
+    bottom: -30%;
+    width: 260px;
     transform: translateX(-50%);
   }
 
   .hero-footer-headlight {
     left: 15%;
-    top: 45%;
-    width: 120px;
-    height: 42px;
+    top: 48%;
+    width: 94px;
+    height: 34px;
   }
 
   .hero-footer-fog {
     left: 50%;
-    width: 95vw;
-    height: 138px;
+    width: 82vw;
+    max-width: 420px;
+    height: 104px;
   }
 
   .hero-footer-links-wrap {

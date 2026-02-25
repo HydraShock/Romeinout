@@ -39,8 +39,6 @@ const TRANSLATIONS = {
 } as const;
 
 const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
-  'Preparando il tuo tour': 'Preparing your tour',
-  'Preparando il tuo tour...': 'Preparing your tour...',
   'Vivi Roma in modo unico': 'Experience Rome in a unique way',
   'Scopri la citta in modo comodo, panoramico e senza stress.': 'Discover the city in a comfortable, panoramic and stress-free way.',
   'Scopri i tour': 'Explore tours',
