@@ -3880,7 +3880,7 @@ body {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.65rem, 11vw, 3.4rem);
+    font-size: clamp(2.95rem, 12.4vw, 3.85rem);
     letter-spacing: -0.024em;
   }
 
@@ -4370,7 +4370,7 @@ body {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.38rem, 13vw, 3rem);
+    font-size: clamp(2.72rem, 15vw, 3.36rem);
   }
 
   .hero-copy h2 {
@@ -6092,7 +6092,7 @@ body {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.15rem, 13.8vw, 2.6rem);
+    font-size: clamp(2.38rem, 15.2vw, 2.95rem);
   }
 
   .hero-copy h2 {

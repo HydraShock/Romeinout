@@ -124,6 +124,26 @@
   line-height: 1.56;
 }
 
+.hero-footer-mobile-vehicle {
+  display: none;
+  position: relative;
+  width: min(72vw, 330px);
+  margin: 1rem auto 0.5rem;
+  pointer-events: none;
+}
+
+.hero-footer-mobile-vehicle-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 58%;
+  height: 44px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.56);
+  filter: blur(18px);
+}
+
 .hero-footer-actions {
   margin-top: 1.55rem;
   display: flex;
@@ -811,7 +831,7 @@
 
 @media (max-width: 860px) {
   .hero-footer-stage {
-    min-height: 500px;
+    min-height: auto;
   }
 
   .hero-footer-card-copy {
@@ -830,6 +850,19 @@
 
   .hero-footer-btn {
     width: 100%;
+  }
+
+  .hero-footer-mobile-vehicle {
+    display: block;
+  }
+
+  .hero-footer-mobile-vehicle .hero-footer-tuktuk {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .hero-footer-vehicle-row {
+    display: none;
   }
 
   .hero-footer-vehicle {
@@ -869,7 +902,7 @@
   }
 
   .hero-footer-stage {
-    min-height: 440px;
+    min-height: auto;
   }
 
   .hero-footer-kicker {

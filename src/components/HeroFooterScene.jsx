@@ -69,6 +69,17 @@ export default function HeroFooterScene() {
             <div className="hero-footer-card-copy">
               <p className="hero-footer-kicker">Tour privati a Roma</p>
               <h2>Scopri Roma in Tuk Tuk</h2>
+
+              <div className="hero-footer-mobile-vehicle" aria-hidden="true">
+                <span className="hero-footer-mobile-vehicle-shadow" />
+                <img
+                  src={heroImageSrc}
+                  alt=""
+                  loading="lazy"
+                  className="hero-footer-tuktuk"
+                />
+              </div>
+
               <p className="hero-footer-lead">
                 Vivi la citta eterna da una prospettiva speciale: itinerari esclusivi, guida locale e
                 fermate iconiche in totale comfort.
