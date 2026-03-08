@@ -639,7 +639,7 @@
 
 .admin-row-contact-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -672,6 +672,12 @@
   color: #1c2d45;
   text-decoration: none;
   word-break: break-all;
+}
+
+.admin-row-reference-card strong {
+  font-family: 'Roboto Mono', 'Consolas', monospace;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
 }
 
 .admin-row-contact-card a:hover {

@@ -5567,6 +5567,13 @@ body {
   word-break: break-word;
 }
 
+.booking-bank-transfer-item small {
+  color: #5e7392;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
 .booking-bank-transfer-iban {
   font-family: 'Roboto Mono', 'Consolas', monospace;
   font-size: 0.98rem;

@@ -191,6 +191,16 @@ function formatEurAmount(value, locale = 'it-IT') {
   });
 }
 
+function generateBankTransferReference() {
+  let randomValue = Math.floor(Math.random() * 1000000);
+  if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
+    const randomBuffer = new Uint32Array(1);
+    window.crypto.getRandomValues(randomBuffer);
+    randomValue = Number(randomBuffer[0] % 1000000);
+  }
+  return `Prenotazione-${String(randomValue).padStart(6, '0')}`;
+}
+
 function resolvePaymentProviderBadge(provider) {
   if (provider === 'mock') {
     return 'TEST';
@@ -354,6 +364,7 @@ function App() {
   const [paymentConfigError, setPaymentConfigError] = useState('');
   const [paypalClientId, setPaypalClientId] = useState(FALLBACK_PAYPAL_CLIENT_ID);
   const [bankTransferAcknowledged, setBankTransferAcknowledged] = useState(false);
+  const [bankTransferReference, setBankTransferReference] = useState('');
   const [paypalSdkReady, setPaypalSdkReady] = useState(false);
   const [paypalSdkError, setPaypalSdkError] = useState('');
   const [completedBooking, setCompletedBooking] = useState(null);
@@ -770,6 +781,16 @@ function App() {
   }, [currentStep, selectedPaymentProvider, visiblePaymentProviders]);
 
   useEffect(() => {
+    if (currentStep !== 6 || selectedPaymentProvider !== BANK_TRANSFER_PROVIDER) {
+      return;
+    }
+    if (bankTransferReference) {
+      return;
+    }
+    setBankTransferReference(generateBankTransferReference());
+  }, [bankTransferReference, currentStep, selectedPaymentProvider]);
+
+  useEffect(() => {
     return () => {
       transitionTimersRef.current.forEach((id) => window.clearTimeout(id));
     };
@@ -922,6 +943,7 @@ function App() {
     setCompletedBooking(null);
     setSelectedPaymentProvider(paymentProviders[0] || FALLBACK_CHECKOUT_PROVIDER);
     setBankTransferAcknowledged(false);
+    setBankTransferReference('');
     setPaypalSdkError('');
     setIsPaying(false);
     paypalIntentIdRef.current = '';
@@ -1007,6 +1029,7 @@ function App() {
     setCompletedBooking(null);
     setPaypalSdkError('');
     setBankTransferAcknowledged(false);
+    setBankTransferReference('');
     setSelectedPaymentProvider((current) => (
       visiblePaymentProviders.includes(current)
         ? current
@@ -1209,9 +1232,13 @@ function App() {
     }
 
     if (selectedPaymentProvider === BANK_TRANSFER_PROVIDER) {
+      const reference = bankTransferReference || generateBankTransferReference();
+      if (!bankTransferReference) {
+        setBankTransferReference(reference);
+      }
       completeManualPayment({
         provider: BANK_TRANSFER_PROVIDER,
-        reference: '',
+        reference,
       });
       return;
     }
@@ -1951,6 +1978,13 @@ function App() {
                       <div className="booking-bank-transfer-item">
                         <span>Importo</span>
                         <strong>EUR {formatEurAmount(bookingTotalAmount, locale)}</strong>
+                      </div>
+                      <div className="booking-bank-transfer-item">
+                        <span>{translateText('Causale')}</span>
+                        <strong>
+                          <span className="booking-inline-gradient">{bankTransferReference || '-'}</span>
+                        </strong>
+                        <small>{translateText('Usa questa causale nel bonifico.')}</small>
                       </div>
                     </div>
                     <button

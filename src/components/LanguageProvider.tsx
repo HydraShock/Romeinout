@@ -85,6 +85,8 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Cognome': 'Last Name',
   'Cellulare': 'Phone',
   'aggiungi il prefisso': 'add country code',
+  'Causale': 'Payment reference',
+  'Usa questa causale nel bonifico.': 'Use this reference in the bank transfer.',
   'Numero Ospiti': 'Number of Guests',
   'I bambini non pagano.': 'Children do not pay.',
   'Conferma la tua Prenotazione': 'Confirm your Booking',

@@ -130,6 +130,10 @@ export default function AppointmentsTable({
                             <strong>N/D</strong>
                           )}
                         </div>
+                        <div className="admin-row-contact-card admin-row-reference-card">
+                          <small>ID Prenotazione Bonifico</small>
+                          <strong>{row.paymentReference || 'N/D'}</strong>
+                        </div>
                       </div>
                       {row.status === 'pending' ? (
                         <div className="admin-row-details-actions">
