@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BarChart3,
   CalendarDays,
@@ -314,6 +314,16 @@ export default function Dashboard() {
     total: 0,
   });
 
+  const handleAuthError = useCallback((error) => {
+    const status = Number(error?.status || 0);
+    const message = String(error?.message || '').toLowerCase();
+    if (status === 401 || status === 403 || message.includes('sessione')) {
+      logout();
+      return true;
+    }
+    return false;
+  }, [logout]);
+
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setSearch(searchInput.trim());
@@ -342,6 +352,9 @@ export default function Dashboard() {
         });
       } catch (error) {
         if (!cancelled) {
+          if (handleAuthError(error)) {
+            return;
+          }
           setDashboardState((prev) => ({ ...prev, loading: false, error: error.message || 'Errore cruscotto.' }));
         }
       }
@@ -351,7 +364,7 @@ export default function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, [monthKey, session.token]);
+  }, [handleAuthError, monthKey, session.token]);
 
   useEffect(() => {
     let cancelled = false;
@@ -375,6 +388,9 @@ export default function Dashboard() {
         });
       } catch (error) {
         if (!cancelled) {
+          if (handleAuthError(error)) {
+            return;
+          }
           setAppointmentsState((prev) => ({ ...prev, loading: false, error: error.message || 'Errore appuntamenti.' }));
         }
       }
@@ -384,7 +400,7 @@ export default function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, [page, search, session.token]);
+  }, [handleAuthError, page, search, session.token]);
 
   const stats = dashboardState.stats || {
     totalAppointments: 0,
@@ -465,6 +481,9 @@ export default function Dashboard() {
         }));
       }
     } catch (error) {
+      if (handleAuthError(error)) {
+        return;
+      }
       setAppointmentsState((prev) => ({
         ...prev,
         error: error.message || 'Errore durante eliminazione appuntamento.',
@@ -497,6 +516,9 @@ export default function Dashboard() {
         )),
       }));
     } catch (error) {
+      if (handleAuthError(error)) {
+        return;
+      }
       setAppointmentsState((prev) => ({
         ...prev,
         error: error.message || 'Errore durante la conferma della prenotazione.',

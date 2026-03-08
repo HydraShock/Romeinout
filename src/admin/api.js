@@ -7,6 +7,12 @@ function withAuthHeaders(token, headers = {}) {
   };
 }
 
+function buildApiError(message, status) {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+}
+
 export async function adminLogin(email, password) {
   const response = await fetch(`${API_BASE_URL}/admin/login`, {
     method: 'POST',
@@ -15,7 +21,7 @@ export async function adminLogin(email, password) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(payload.message || 'Login fallito.');
+    throw buildApiError(payload.message || 'Login fallito.', response.status);
   }
   return payload;
 }
@@ -26,7 +32,7 @@ export async function fetchAdminMe(token) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(payload.message || 'Sessione non valida.');
+    throw buildApiError(payload.message || 'Sessione non valida.', response.status);
   }
   return payload;
 }
@@ -45,7 +51,7 @@ export async function fetchAdminDashboard(token, monthKey) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(payload.message || 'Errore nel caricamento dashboard.');
+    throw buildApiError(payload.message || 'Errore nel caricamento dashboard.', response.status);
   }
   return payload;
 }
@@ -64,7 +70,7 @@ export async function fetchAdminAppointments(token, { page = 1, pageSize = 8, se
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(payload.message || 'Errore nel caricamento appuntamenti.');
+    throw buildApiError(payload.message || 'Errore nel caricamento appuntamenti.', response.status);
   }
   return payload;
 }
@@ -76,7 +82,7 @@ export async function deleteAdminAppointment(token, appointmentId) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(payload.message || 'Errore durante eliminazione prenotazione.');
+    throw buildApiError(payload.message || 'Errore durante eliminazione prenotazione.', response.status);
   }
   return payload;
 }
@@ -88,7 +94,7 @@ export async function confirmAdminAppointment(token, appointmentId) {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(payload.message || 'Errore durante la conferma prenotazione.');
+    throw buildApiError(payload.message || 'Errore durante la conferma prenotazione.', response.status);
   }
   return payload;
 }
