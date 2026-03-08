@@ -85,6 +85,7 @@ const dbHost = String(process.env.DB_HOST || '').trim().toLowerCase();
 const defaultSslEnabled = dbHost.endsWith('.supabase.co');
 const dbSslEnabled = parseBooleanEnv(process.env.DB_SSL, defaultSslEnabled);
 const dbPoolSize = Number(process.env.DB_POOL_SIZE || 10);
+const startupSchemaSyncRequired = parseBooleanEnv(process.env.STARTUP_SCHEMA_SYNC_REQUIRED, false);
 const poolConfig = dbConnectionString
   ? {
       connectionString: dbConnectionString,
@@ -1736,8 +1737,15 @@ async function initializeServer() {
   if (!initializationPromise) {
     initializationPromise = (async () => {
       logStartupWarningsOnce();
-      await ensureCustomerColumns();
-      await ensurePricingColumns();
+      try {
+        await ensureCustomerColumns();
+        await ensurePricingColumns();
+      } catch (error) {
+        console.error('Schema sync startup error:', error.message);
+        if (startupSchemaSyncRequired) {
+          throw error;
+        }
+      }
     })().catch((error) => {
       initializationPromise = null;
       throw error;
