@@ -12,6 +12,7 @@ import BackgroundArtLayer from './components/BackgroundArtLayer';
 import HeroAtmosphere from './components/HeroAtmosphere';
 import CtaMarbleTriptych from './components/CtaMarbleTriptych';
 import { useLanguage } from './components/LanguageProvider';
+import API_BASE_URL from './config/apiBaseUrl';
 
 const heroRomeImages = [
   'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=900&q=80',
@@ -109,7 +110,6 @@ const bookingTourOptions = [
   },
 ];
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:4000/api';
 const FALLBACK_PAYMENT_MODE = (process.env.REACT_APP_PAYMENT_MODE || 'mock').toLowerCase();
 const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID || 'service_al2ttvn';
 const EMAILJS_TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || 'template_sfyxzh5';

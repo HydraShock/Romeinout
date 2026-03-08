@@ -63,15 +63,49 @@ const adminLoginAttemptsByIp = new Map();
 const adminLoginAttemptsByEmail = new Map();
 let paypalAccessToken = '';
 let paypalAccessTokenExpiresAt = 0;
+let initializationPromise = null;
+let startupWarningsLogged = false;
 
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT || 5432),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  max: Number(process.env.DB_POOL_SIZE || 10),
-});
+function parseBooleanEnv(rawValue, fallback = false) {
+  if (rawValue === undefined || rawValue === null || rawValue === '') {
+    return fallback;
+  }
+  const normalized = String(rawValue).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'on', 'require', 'required'].includes(normalized)) {
+    return true;
+  }
+  if (['0', 'false', 'no', 'off'].includes(normalized)) {
+    return false;
+  }
+  return fallback;
+}
+
+const dbConnectionString = String(process.env.DATABASE_URL || '').trim();
+const dbHost = String(process.env.DB_HOST || '').trim().toLowerCase();
+const defaultSslEnabled = dbHost.endsWith('.supabase.co');
+const dbSslEnabled = parseBooleanEnv(process.env.DB_SSL, defaultSslEnabled);
+const dbPoolSize = Number(process.env.DB_POOL_SIZE || 10);
+const poolConfig = dbConnectionString
+  ? {
+      connectionString: dbConnectionString,
+      max: dbPoolSize,
+    }
+  : {
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT || 5432),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      max: dbPoolSize,
+    };
+
+if (dbSslEnabled) {
+  poolConfig.ssl = {
+    rejectUnauthorized: parseBooleanEnv(process.env.DB_SSL_REJECT_UNAUTHORIZED, true),
+  };
+}
+
+const pool = new Pool(poolConfig);
 
 const allowedOrigins = frontendOriginRaw
   .split(',')
@@ -1671,18 +1705,7 @@ app.post('/api/bookings/confirm', async (req, res) => {
 
 async function startServer() {
   try {
-    if (!isAdminAuthConfigured()) {
-      console.warn('Admin auth non configurata: login admin disabilitato finché non imposti ADMIN_EMAIL e ADMIN_PASSWORD_HASH.');
-    }
-    if (adminLegacyPassword && !adminPasswordHash) {
-      console.warn('Admin auth: stai usando ADMIN_PASSWORD in chiaro. Usa ADMIN_PASSWORD_HASH.');
-    }
-    if (!isPayPalConfigured) {
-      console.warn('PayPal non configurato: imposta PAYPAL_CLIENT_ID e PAYPAL_CLIENT_SECRET per abilitare i pagamenti reali.');
-    }
-
-    await ensureCustomerColumns();
-    await ensurePricingColumns();
+    await initializeServer();
     app.listen(port, () => {
       console.log(`Booking API attiva su http://localhost:${port}`);
     });
@@ -1692,4 +1715,42 @@ async function startServer() {
   }
 }
 
-startServer();
+function logStartupWarningsOnce() {
+  if (startupWarningsLogged) {
+    return;
+  }
+  startupWarningsLogged = true;
+
+  if (!isAdminAuthConfigured()) {
+    console.warn('Admin auth non configurata: login admin disabilitato finche non imposti ADMIN_EMAIL e ADMIN_PASSWORD_HASH.');
+  }
+  if (adminLegacyPassword && !adminPasswordHash) {
+    console.warn('Admin auth: stai usando ADMIN_PASSWORD in chiaro. Usa ADMIN_PASSWORD_HASH.');
+  }
+  if (!isPayPalConfigured) {
+    console.warn('PayPal non configurato: imposta PAYPAL_CLIENT_ID e PAYPAL_CLIENT_SECRET per abilitare i pagamenti reali.');
+  }
+}
+
+async function initializeServer() {
+  if (!initializationPromise) {
+    initializationPromise = (async () => {
+      logStartupWarningsOnce();
+      await ensureCustomerColumns();
+      await ensurePricingColumns();
+    })().catch((error) => {
+      initializationPromise = null;
+      throw error;
+    });
+  }
+  await initializationPromise;
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = {
+  app,
+  initializeServer,
+};
