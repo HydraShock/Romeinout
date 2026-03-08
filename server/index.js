@@ -113,6 +113,7 @@ const allowedOrigins = frontendOriginRaw
   .map((origin) => origin.trim())
   .filter(Boolean);
 const isProduction = process.env.NODE_ENV === 'production';
+const exposeApiErrors = parseBooleanEnv(process.env.API_DEBUG_ERRORS, false);
 
 function isLocalhostOrigin(origin) {
   if (!origin) {
@@ -658,8 +659,15 @@ app.get('/api/health', async (req, res) => {
     await pool.query('SELECT 1');
     res.json({ ok: true });
   } catch (error) {
-    const message = isProduction ? 'Database non raggiungibile.' : `Database non raggiungibile: ${error.message}`;
-    res.status(500).json({ ok: false, message });
+    const errorMessage = String(error?.message || 'Errore database sconosciuto.');
+    const message = isProduction && !exposeApiErrors
+      ? 'Database non raggiungibile.'
+      : `Database non raggiungibile: ${errorMessage}`;
+    res.status(500).json({
+      ok: false,
+      message,
+      ...(exposeApiErrors ? { detail: errorMessage } : {}),
+    });
   }
 });
 
@@ -1327,10 +1335,14 @@ app.get('/api/availability', async (req, res) => {
     res.json({ month, days });
   } catch (error) {
     console.error('Availability API error:', error);
-    const message = isProduction
+    const errorMessage = String(error?.message || 'Errore disponibilita sconosciuto.');
+    const message = isProduction && !exposeApiErrors
       ? 'Errore durante il calcolo disponibilita.'
-      : `Errore durante il calcolo disponibilita: ${error.message}`;
-    res.status(500).json({ message });
+      : `Errore durante il calcolo disponibilita: ${errorMessage}`;
+    res.status(500).json({
+      message,
+      ...(exposeApiErrors ? { detail: errorMessage } : {}),
+    });
   }
 });
 
@@ -1367,7 +1379,13 @@ app.get('/api/availability/range', async (req, res) => {
     const availability = await getRangeAvailability(fromDate, toDate);
     res.json(availability);
   } catch (error) {
-    res.status(500).json({ message: 'Errore durante il calcolo disponibilita range.' });
+    const errorMessage = String(error?.message || 'Errore disponibilita range sconosciuto.');
+    res.status(500).json({
+      message: isProduction && !exposeApiErrors
+        ? 'Errore durante il calcolo disponibilita range.'
+        : `Errore durante il calcolo disponibilita range: ${errorMessage}`,
+      ...(exposeApiErrors ? { detail: errorMessage } : {}),
+    });
   }
 });
 
