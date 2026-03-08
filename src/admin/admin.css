@@ -553,6 +553,21 @@
   color: #fff;
 }
 
+.admin-appointments-table tbody tr.admin-data-row.pending-row:hover {
+  filter: drop-shadow(0 10px 18px rgba(214, 131, 32, 0.26));
+}
+
+.admin-appointments-table tbody tr.admin-data-row.pending-row:hover td {
+  background: linear-gradient(180deg, #ffe7c5 0%, #ffd7a6 100%);
+  color: #7a3f00;
+  border-bottom-color: transparent;
+}
+
+.admin-appointments-table tbody tr.admin-data-row.pending-row:hover .admin-actions-cell button {
+  background: rgba(122, 63, 0, 0.12);
+  color: #7a3f00;
+}
+
 .admin-appointments-table tbody tr.admin-data-row.expanded td {
   background: linear-gradient(180deg, #ff9000 0%, #e45a00 100%);
   color: #fff;
@@ -574,6 +589,16 @@
   color: #fff;
 }
 
+.admin-appointments-table tbody tr.admin-data-row.pending-row.expanded td {
+  background: linear-gradient(180deg, #ffe7c5 0%, #ffd7a6 100%);
+  color: #7a3f00;
+}
+
+.admin-appointments-table tbody tr.admin-data-row.pending-row.expanded .admin-actions-cell button {
+  background: rgba(122, 63, 0, 0.12);
+  color: #7a3f00;
+}
+
 .admin-row-details td {
   padding: 0 18px;
   border-bottom: 1px solid #edf1f6;
@@ -590,7 +615,7 @@
 }
 
 .admin-row-details.open .admin-row-details-inner {
-  max-height: 150px;
+  max-height: 230px;
   opacity: 1;
   padding: 10px 0 14px;
   transform: translateY(0) scale(1);
@@ -651,6 +676,36 @@
 
 .admin-row-contact-card a:hover {
   color: #de4f00;
+}
+
+.admin-row-details-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-row-confirm-btn {
+  min-height: 40px;
+  border: none;
+  border-radius: 12px;
+  padding: 0 16px;
+  background: linear-gradient(90deg, #ff7b00 0%, #ff6200 100%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(229, 92, 12, 0.3);
+}
+
+.admin-row-confirm-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.admin-row-confirm-btn:disabled {
+  opacity: 0.68;
+  cursor: not-allowed;
 }
 
 .admin-empty-cell {
@@ -1327,5 +1382,13 @@
 
   .admin-row-contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-row-details-actions {
+    justify-content: stretch;
+  }
+
+  .admin-row-confirm-btn {
+    width: 100%;
   }
 }

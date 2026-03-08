@@ -41,7 +41,7 @@ export default function TerminiCondizioni() {
 
               <li className="legal-section">
                 <h2>3. Pagamenti</h2>
-                <p>I pagamenti sono effettuati tramite PayPal.</p>
+                <p>I pagamenti possono essere effettuati tramite PayPal o bonifico bancario.</p>
                 <p>RomeInOut non conserva dati di pagamento.</p>
               </li>
 

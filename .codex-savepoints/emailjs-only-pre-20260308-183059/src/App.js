@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import emailjs from '@emailjs/browser';
 import './App.css';
 import { BackgroundGradientAnimation } from './ui/background-gradient-animation';
 import { BackgroundGradient } from './components/ui/background-gradient.jsx';
@@ -111,9 +110,6 @@ const bookingTourOptions = [
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:4000/api';
 const FALLBACK_PAYMENT_MODE = (process.env.REACT_APP_PAYMENT_MODE || 'mock').toLowerCase();
-const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID || 'service_al2ttvn';
-const EMAILJS_TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || 'template_sfyxzh5';
-const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || 'NalRQ0bwARmVEttpJ';
 const BANK_TRANSFER_PROVIDER = 'bank_transfer';
 const SUPPORTED_PAYMENT_PROVIDERS = ['mock', 'paypal', BANK_TRANSFER_PROVIDER];
 const fallbackCheckoutProviderByMode = {
@@ -136,10 +132,6 @@ const BANK_TRANSFER_DETAILS = {
 const SUPPORT_PHONE_LABEL = '+39 375 605 1114';
 const SUPPORT_PHONE_LINK = 'tel:+393756051114';
 const SUPPORT_EMAIL = 'info@tuktukroma.it';
-const EMAIL_TEMPLATE_COMPANY = 'Romein&out';
-const EMAIL_TEMPLATE_PHONE_CONTACT = '+39 375 605 1114';
-const EMAIL_TEMPLATE_CONTACT_EMAIL = 'info@romeinout.it';
-const EMAIL_TEMPLATE_WEBSITE = 'www.romeinout.it';
 const SUPPORT_WHATSAPP_MESSAGE = 'Ciao, ho appena effettuato il pagamento del tour Tuk Tuk e devo completare gli ultimi dettagli della prenotazione.';
 const SUPPORT_WHATSAPP_LINK = `https://wa.me/393756051114?text=${encodeURIComponent(SUPPORT_WHATSAPP_MESSAGE)}`;
 const availabilityNetworkErrorMessage =
@@ -839,54 +831,6 @@ function App() {
     currency: 'EUR',
   };
 
-  const sendBookingConfirmationEmail = useCallback(async ({ confirmPayload, paymentProvider }) => {
-    const normalizedProvider = String(paymentProvider || '').trim().toLowerCase();
-    if (normalizedProvider !== BANK_TRANSFER_PROVIDER) {
-      return;
-    }
-    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
-      return;
-    }
-
-    const totalAmountEur = Number(
-      confirmPayload?.totalPriceEur
-      ?? (selectedTour ? selectedTour.price * Number(people) : 0)
-    );
-    const emailPayload = {
-      name: bookingPayload.customer.firstName,
-      surname: bookingPayload.customer.lastName,
-      email: bookingPayload.customer.email,
-      phone: bookingPayload.customer.phone,
-      date: bookingPayload.date,
-      time: bookingPayload.time,
-      people: Number(bookingPayload.people) || 0,
-      amount: Number.isFinite(totalAmountEur) ? totalAmountEur.toFixed(2) : '0.00',
-      tour: selectedTour?.title || bookingPayload.tourName || '',
-      company: EMAIL_TEMPLATE_COMPANY,
-      phone_contact: EMAIL_TEMPLATE_PHONE_CONTACT,
-      contact_email: EMAIL_TEMPLATE_CONTACT_EMAIL,
-      website: EMAIL_TEMPLATE_WEBSITE,
-    };
-
-    await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
-      emailPayload,
-      { publicKey: EMAILJS_PUBLIC_KEY }
-    );
-  }, [
-    bookingPayload.customer.email,
-    bookingPayload.customer.firstName,
-    bookingPayload.customer.lastName,
-    bookingPayload.customer.phone,
-    bookingPayload.date,
-    bookingPayload.people,
-    bookingPayload.time,
-    bookingPayload.tourName,
-    people,
-    selectedTour,
-  ]);
-
   const clearStepTimers = useCallback(() => {
     transitionTimersRef.current.forEach((id) => window.clearTimeout(id));
     transitionTimersRef.current = [];
@@ -1161,22 +1105,12 @@ function App() {
         paymentProvider: normalizedProvider,
         paymentReference,
       });
-      if (normalizedProvider === BANK_TRANSFER_PROVIDER) {
-        try {
-          await sendBookingConfirmationEmail({
-            confirmPayload,
-            paymentProvider: normalizedProvider,
-          });
-        } catch (emailError) {
-          console.error('EmailJS booking confirmation failed:', emailError?.message || emailError);
-        }
-      }
     } catch (error) {
       window.alert(error.message || translateText('Errore durante il pagamento.'));
     } finally {
       setIsPaying(false);
     }
-  }, [confirmBookingIntent, createBookingIntent, handlePaymentSuccess, sendBookingConfirmationEmail, translateText]);
+  }, [confirmBookingIntent, createBookingIntent, handlePaymentSuccess, translateText]);
 
   const startCheckout = () => {
     if (selectedPaymentProvider === 'paypal') {

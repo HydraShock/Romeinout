@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS appointments (
   tour_id VARCHAR(40) NULL,
   payment_provider VARCHAR(32) NOT NULL,
   payment_reference VARCHAR(128) NULL,
-  status ENUM('confirmed', 'cancelled') NOT NULL DEFAULT 'confirmed',
+  status ENUM('pending', 'confirmed', 'cancelled') NOT NULL DEFAULT 'confirmed',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),

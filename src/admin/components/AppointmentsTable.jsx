@@ -31,7 +31,9 @@ export default function AppointmentsTable({
   total,
   onPageChange,
   onDelete,
+  onConfirm,
   deletingId,
+  confirmingId,
 }) {
   const [expandedRowId, setExpandedRowId] = useState(null);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -76,7 +78,7 @@ export default function AppointmentsTable({
             return (
               <React.Fragment key={row.id}>
                 <tr
-                  className={`admin-data-row ${detailsOpen ? 'expanded' : ''}`}
+                  className={`admin-data-row ${detailsOpen ? 'expanded' : ''} ${row.status === 'pending' ? 'pending-row' : ''}`}
                   onClick={() => toggleRowDetails(row.id)}
                   role="button"
                   tabIndex={0}
@@ -129,6 +131,18 @@ export default function AppointmentsTable({
                           )}
                         </div>
                       </div>
+                      {row.status === 'pending' ? (
+                        <div className="admin-row-details-actions">
+                          <button
+                            type="button"
+                            className="admin-row-confirm-btn"
+                            onClick={() => onConfirm?.(row.id)}
+                            disabled={confirmingId === row.id || deletingId === row.id}
+                          >
+                            {confirmingId === row.id ? 'Conferma in corso...' : 'CONFERMA PRENOTAZIONE'}
+                          </button>
+                        </div>
+                      ) : null}
                     </div>
                   </td>
                 </tr>

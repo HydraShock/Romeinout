@@ -18,7 +18,12 @@ import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import StatCard from './components/StatCard';
 import AppointmentsTable from './components/AppointmentsTable';
-import { deleteAdminAppointment, fetchAdminAppointments, fetchAdminDashboard } from './api';
+import {
+  confirmAdminAppointment,
+  deleteAdminAppointment,
+  fetchAdminAppointments,
+  fetchAdminDashboard,
+} from './api';
 import { useAdminAuth } from './AdminApp';
 
 const pageSize = 8;
@@ -291,6 +296,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [deletingAppointmentId, setDeletingAppointmentId] = useState(null);
+  const [confirmingAppointmentId, setConfirmingAppointmentId] = useState(null);
 
   const [dashboardState, setDashboardState] = useState({
     loading: true,
@@ -468,6 +474,38 @@ export default function Dashboard() {
     }
   };
 
+  const handleConfirmAppointment = async (appointmentId) => {
+    const canConfirm = window.confirm('Confermare questa prenotazione in attesa?');
+    if (!canConfirm) {
+      return;
+    }
+
+    try {
+      setConfirmingAppointmentId(appointmentId);
+      await confirmAdminAppointment(session.token, appointmentId);
+      setAppointmentsState((prev) => ({
+        ...prev,
+        error: '',
+        rows: prev.rows.map((row) => (
+          row.id === appointmentId
+            ? {
+              ...row,
+              status: 'confirmed',
+              paymentStatus: row.paymentReference ? 'paid' : 'pending',
+            }
+            : row
+        )),
+      }));
+    } catch (error) {
+      setAppointmentsState((prev) => ({
+        ...prev,
+        error: error.message || 'Errore durante la conferma della prenotazione.',
+      }));
+    } finally {
+      setConfirmingAppointmentId(null);
+    }
+  };
+
   return (
     <div className="admin-shell">
       <Sidebar
@@ -519,7 +557,9 @@ export default function Dashboard() {
               total={appointmentsState.total}
               onPageChange={setPage}
               onDelete={handleDeleteAppointment}
+              onConfirm={handleConfirmAppointment}
               deletingId={deletingAppointmentId}
+              confirmingId={confirmingAppointmentId}
             />
           </section>
 

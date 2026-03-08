@@ -80,3 +80,15 @@ export async function deleteAdminAppointment(token, appointmentId) {
   }
   return payload;
 }
+
+export async function confirmAdminAppointment(token, appointmentId) {
+  const response = await fetch(`${API_BASE_URL}/admin/appointments/${appointmentId}/confirm`, {
+    method: 'POST',
+    headers: withAuthHeaders(token, { 'Content-Type': 'application/json' }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.message || 'Errore durante la conferma prenotazione.');
+  }
+  return payload;
+}

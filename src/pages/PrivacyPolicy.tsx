@@ -63,7 +63,7 @@ export default function PrivacyPolicy() {
                   <li>Orario del tour</li>
                 </ul>
                 <p>c) Dati di pagamento</p>
-                <p>I pagamenti sono gestiti tramite PayPal. RomeInOut non conserva direttamente i dati delle carte di pagamento.</p>
+                <p>I pagamenti possono essere gestiti tramite PayPal o bonifico bancario. RomeInOut non conserva direttamente i dati delle carte di pagamento dell&apos;utente.</p>
                 <p>d) Dati tecnici</p>
                 <ul>
                   <li>Indirizzo IP</li>
@@ -118,7 +118,7 @@ export default function PrivacyPolicy() {
                 <h2>7. Comunicazione a Terzi</h2>
                 <p>I dati possono essere comunicati a:</p>
                 <ul>
-                  <li>PayPal (gestione pagamenti)</li>
+                  <li>PayPal e/o istituti bancari (gestione pagamenti)</li>
                   <li>Provider hosting</li>
                   <li>Consulenti fiscali / commercialista</li>
                   <li>Autorita competenti ove richiesto</li>

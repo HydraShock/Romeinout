@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS appointments (
   payment_provider VARCHAR(32) NOT NULL,
   payment_reference VARCHAR(128),
   status VARCHAR(16) NOT NULL DEFAULT 'confirmed'
-    CHECK (status IN ('confirmed', 'cancelled')),
+    CHECK (status IN ('pending', 'confirmed', 'cancelled')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -186,7 +186,8 @@ WHERE booking_date = (SELECT booking_date FROM booking_intents WHERE id = $1)
 INSERT INTO appointments (
   booking_date, time_slot, guests, tour_id, payment_provider, payment_reference, status
 )
-SELECT booking_date, time_slot, guests, tour_id, $2, $3, 'confirmed'
+SELECT booking_date, time_slot, guests, tour_id, $2, $3,
+  CASE WHEN $2 = 'bank_transfer' THEN 'pending' ELSE 'confirmed' END
 FROM booking_intents
 WHERE id = $1
 RETURNING id;

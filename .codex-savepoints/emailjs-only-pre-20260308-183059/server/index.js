@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const { Pool } = require('pg');
 
 dotenv.config();
@@ -22,6 +23,19 @@ const isPayPalConfigured = Boolean(paypalClientId && paypalClientSecret);
 const bankTransferBeneficiary = String(process.env.BANK_TRANSFER_BENEFICIARY || process.env.POSTEPAY_BENEFICIARY || 'RAZZA ELENA').trim();
 const bankTransferIban = String(process.env.BANK_TRANSFER_IBAN || process.env.POSTEPAY_IBAN || 'IT81I3608105138284162484165').trim();
 const bankTransferNotes = String(process.env.BANK_TRANSFER_NOTES || process.env.POSTEPAY_NOTES || '').trim();
+const smtpHost = String(process.env.SMTP_HOST || '').trim();
+const smtpPort = Number(process.env.SMTP_PORT || 587);
+const smtpSecureRaw = String(process.env.SMTP_SECURE || '').trim().toLowerCase();
+const smtpSecure = smtpSecureRaw === 'true' || smtpSecureRaw === '1' || smtpPort === 465;
+const smtpUser = String(process.env.SMTP_USER || '').trim();
+const smtpPass = String(process.env.SMTP_PASS || '').trim();
+const smtpFrom = String(process.env.SMTP_FROM || '').trim();
+const smtpReplyTo = String(process.env.SMTP_REPLY_TO || '').trim();
+const bookingBusinessName = String(process.env.BOOKING_BUSINESS_NAME || 'Tuk Tuk Booking').trim();
+const bookingSupportPhone = String(process.env.BOOKING_SUPPORT_PHONE || '').trim();
+const bookingSupportEmail = String(process.env.BOOKING_SUPPORT_EMAIL || '').trim();
+const bookingSupportWebsite = String(process.env.BOOKING_SUPPORT_WEBSITE || '').trim();
+const emailNotificationsEnabled = Boolean(smtpHost && Number.isFinite(smtpPort) && smtpPort > 0 && smtpFrom);
 const paymentProvidersByMode = {
   mock: ['mock', 'paypal', 'bank_transfer'],
   paypal: ['paypal', 'bank_transfer'],
@@ -63,6 +77,7 @@ const adminLoginAttemptsByIp = new Map();
 const adminLoginAttemptsByEmail = new Map();
 let paypalAccessToken = '';
 let paypalAccessTokenExpiresAt = 0;
+let smtpTransporter = null;
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -257,6 +272,198 @@ function resolveTourLabel(tourIdRaw) {
     .filter(Boolean)
     .map((token) => token.charAt(0).toUpperCase() + token.slice(1))
     .join(' ');
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatDateForCustomer(dateRaw) {
+  const value = String(dateRaw || '');
+  if (!isValidDateKey(value)) {
+    return value;
+  }
+  const [year, month, day] = value.split('-');
+  return `${day}/${month}/${year}`;
+}
+
+function resolveBookingCode(bookingIdRaw) {
+  const bookingId = Number(bookingIdRaw || 0);
+  if (!Number.isInteger(bookingId) || bookingId <= 0) {
+    return '';
+  }
+  return `BK-${String(bookingId).padStart(3, '0')}`;
+}
+
+function resolveEmailTotalPriceCents(totalPriceRaw, unitPriceRaw, guestsRaw, tourIdRaw) {
+  const totalPrice = Number(totalPriceRaw);
+  if (Number.isInteger(totalPrice) && totalPrice >= 0) {
+    return totalPrice;
+  }
+  const guests = Number(guestsRaw || 0);
+  if (!Number.isInteger(guests) || guests <= 0) {
+    return 0;
+  }
+  const unitPrice = Number(unitPriceRaw);
+  if (Number.isInteger(unitPrice) && unitPrice >= 0) {
+    return unitPrice * guests;
+  }
+  const fallbackUnitPrice = resolveTourPriceCents(tourIdRaw);
+  if (Number.isInteger(fallbackUnitPrice) && fallbackUnitPrice >= 0) {
+    return fallbackUnitPrice * guests;
+  }
+  return 0;
+}
+
+function getSmtpTransporter() {
+  if (!emailNotificationsEnabled) {
+    return null;
+  }
+  if (smtpTransporter) {
+    return smtpTransporter;
+  }
+  const transportOptions = {
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpSecure,
+  };
+  if (smtpUser && smtpPass) {
+    transportOptions.auth = {
+      user: smtpUser,
+      pass: smtpPass,
+    };
+  }
+  smtpTransporter = nodemailer.createTransport(transportOptions);
+  return smtpTransporter;
+}
+
+function buildCustomerSupportFooterLines() {
+  const lines = [];
+  if (bookingSupportPhone) {
+    lines.push(`Telefono: ${bookingSupportPhone}`);
+  }
+  if (bookingSupportEmail) {
+    lines.push(`Email supporto: ${bookingSupportEmail}`);
+  }
+  if (bookingSupportWebsite) {
+    lines.push(`Sito: ${bookingSupportWebsite}`);
+  }
+  return lines;
+}
+
+function buildCustomerEmailContent(payload) {
+  const customerName = [payload.customerFirstName, payload.customerLastName]
+    .map((part) => sanitizeCustomerField(part, 80))
+    .filter(Boolean)
+    .join(' ');
+  const greetingName = customerName || 'Cliente';
+  const tourLabel = resolveTourLabel(payload.tourId);
+  const bookingCode = resolveBookingCode(payload.bookingId);
+  const bookingDateLabel = formatDateForCustomer(payload.bookingDate);
+  const guests = Number(payload.guests || 0);
+  const totalPriceCents = resolveEmailTotalPriceCents(
+    payload.totalPriceCents,
+    payload.unitPriceCents,
+    guests,
+    payload.tourId
+  );
+  const totalPriceLabel = `${centsToEur(totalPriceCents).toFixed(2)} EUR`;
+  const paymentProviderLabel = payload.paymentProvider === 'bank_transfer'
+    ? 'Bonifico bancario'
+    : payload.paymentProvider === 'paypal'
+      ? 'PayPal'
+      : 'Pagamento online';
+  const isPending = String(payload.bookingStatus || '').toLowerCase() === 'pending';
+  const subjectPrefix = isPending ? 'Prenotazione ricevuta' : 'Prenotazione confermata';
+  const subject = bookingCode
+    ? `${subjectPrefix} - ${bookingCode}`
+    : `${subjectPrefix} - ${bookingBusinessName}`;
+
+  const lines = [
+    `Ciao ${greetingName},`,
+    '',
+    isPending
+      ? 'abbiamo ricevuto la tua prenotazione. Ti confermeremo appena verifichiamo il pagamento.'
+      : 'la tua prenotazione e confermata.',
+    '',
+    bookingCode ? `Codice prenotazione: ${bookingCode}` : '',
+    `Tour: ${tourLabel}`,
+    `Data: ${bookingDateLabel}`,
+    `Fascia oraria: ${payload.timeSlot || '-'}`,
+    `Ospiti: ${guests}`,
+    `Totale: ${totalPriceLabel}`,
+    `Pagamento: ${paymentProviderLabel}`,
+    '',
+  ].filter(Boolean);
+
+  if (isPending && payload.paymentProvider === 'bank_transfer') {
+    lines.push('Coordinate per il bonifico:');
+    lines.push(`Beneficiario: ${bankTransferBeneficiary}`);
+    lines.push(`IBAN: ${bankTransferIban}`);
+    if (bankTransferNotes) {
+      lines.push(`Note bonifico: ${bankTransferNotes}`);
+    }
+    lines.push('');
+  }
+
+  const supportFooterLines = buildCustomerSupportFooterLines();
+  if (supportFooterLines.length) {
+    lines.push('Contatti utili:');
+    supportFooterLines.forEach((line) => lines.push(line));
+    lines.push('');
+  }
+  lines.push(`Grazie,`);
+  lines.push(bookingBusinessName);
+
+  const text = lines.join('\n');
+  const htmlRows = lines
+    .map((line) => (line ? `<p>${escapeHtml(line)}</p>` : '<br/>'))
+    .join('');
+  const html = `<!doctype html><html><body style="font-family:Arial,sans-serif;color:#1f2937;">${htmlRows}</body></html>`;
+
+  return { subject, text, html };
+}
+
+async function sendCustomerBookingEmail(payload) {
+  if (!emailNotificationsEnabled) {
+    return false;
+  }
+  const recipient = sanitizeCustomerField(payload.customerEmail, 160).toLowerCase();
+  if (!isValidCustomerEmail(recipient)) {
+    return false;
+  }
+  const transporter = getSmtpTransporter();
+  if (!transporter) {
+    return false;
+  }
+  const { subject, text, html } = buildCustomerEmailContent(payload);
+  const message = {
+    from: smtpFrom,
+    to: recipient,
+    subject,
+    text,
+    html,
+  };
+  if (smtpReplyTo) {
+    message.replyTo = smtpReplyTo;
+  }
+  await transporter.sendMail(message);
+  return true;
+}
+
+function queueCustomerBookingEmail(payload) {
+  if (!emailNotificationsEnabled) {
+    return;
+  }
+  sendCustomerBookingEmail(payload).catch((error) => {
+    const recipient = sanitizeCustomerField(payload.customerEmail, 160).toLowerCase();
+    console.error(`Email cliente non inviata (${recipient || 'n/a'}):`, error.message);
+  });
 }
 
 function ensurePayPalIsEnabled() {
@@ -1027,6 +1234,29 @@ app.post('/api/admin/appointments/:id/confirm', requireAdminAuth, async (req, re
 
     if (updateResult.rows.length) {
       const updatedBooking = updateResult.rows[0];
+      const guestsNumber = Number(updatedBooking.guests || 0);
+      const totalPriceCents = resolveEmailTotalPriceCents(
+        updatedBooking.total_price_cents,
+        updatedBooking.unit_price_cents,
+        guestsNumber,
+        updatedBooking.tour_id
+      );
+      queueCustomerBookingEmail({
+        bookingId: Number(updatedBooking.id),
+        bookingStatus: 'confirmed',
+        bookingDate: String(updatedBooking.booking_date || ''),
+        timeSlot: updatedBooking.time_slot || '',
+        guests: guestsNumber,
+        tourId: updatedBooking.tour_id || '',
+        unitPriceCents: updatedBooking.unit_price_cents,
+        totalPriceCents,
+        customerFirstName: updatedBooking.customer_first_name || '',
+        customerLastName: updatedBooking.customer_last_name || '',
+        customerEmail: updatedBooking.customer_email || '',
+        paymentProvider: updatedBooking.payment_provider || '',
+        paymentReference: updatedBooking.payment_reference || '',
+      });
+
       res.json({
         ok: true,
         bookingId: Number(updatedBooking.id),
@@ -1651,6 +1881,22 @@ app.post('/api/bookings/confirm', async (req, res) => {
 
     await connection.query('COMMIT');
     const bookingId = Number(insertResult.rows[0].id);
+    queueCustomerBookingEmail({
+      bookingId,
+      bookingStatus: appointmentStatus,
+      bookingDate: String(intent.booking_date || ''),
+      timeSlot: intent.time_slot || '',
+      guests: guestsNumber,
+      tourId: intent.tour_id || '',
+      unitPriceCents,
+      totalPriceCents,
+      customerFirstName: intent.customer_first_name || '',
+      customerLastName: intent.customer_last_name || '',
+      customerEmail: intent.customer_email || '',
+      paymentProvider: normalizedPaymentProvider,
+      paymentReference: normalizedPaymentReference || '',
+    });
+
     res.status(201).json({
       bookingId,
       bookingStatus: appointmentStatus,
@@ -1679,6 +1925,9 @@ async function startServer() {
     }
     if (!isPayPalConfigured) {
       console.warn('PayPal non configurato: imposta PAYPAL_CLIENT_ID e PAYPAL_CLIENT_SECRET per abilitare i pagamenti reali.');
+    }
+    if (!emailNotificationsEnabled) {
+      console.warn('Email cliente disabilitate: imposta SMTP_HOST, SMTP_PORT e SMTP_FROM per abilitarle.');
     }
 
     await ensureCustomerColumns();
