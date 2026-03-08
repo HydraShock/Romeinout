@@ -1172,13 +1172,26 @@ function App() {
         }
       }
     } catch (error) {
+      if (String(error?.message || '').toLowerCase().includes('fascia oraria')) {
+        await refreshAvailabilityForCurrentMonth();
+      }
       window.alert(error.message || translateText('Errore durante il pagamento.'));
     } finally {
       setIsPaying(false);
     }
-  }, [confirmBookingIntent, createBookingIntent, handlePaymentSuccess, sendBookingConfirmationEmail, translateText]);
+  }, [
+    confirmBookingIntent,
+    createBookingIntent,
+    handlePaymentSuccess,
+    refreshAvailabilityForCurrentMonth,
+    sendBookingConfirmationEmail,
+    translateText,
+  ]);
 
   const startCheckout = () => {
+    if (isPaying) {
+      return;
+    }
     if (selectedPaymentProvider === 'paypal') {
       window.alert(translateText('Seleziona PayPal e completa il checkout dal pulsante PayPal.'));
       return;
@@ -1942,9 +1955,10 @@ function App() {
                       type="button"
                       className="booking-primary-cta booking-bank-transfer-btn"
                       onClick={startCheckout}
+                      disabled={isPaying}
                       aria-live="polite"
                     >
-                      HO EFFETTUATO PAGAMENTO
+                      {isPaying ? 'INVIO IN CORSO...' : 'HO EFFETTUATO PAGAMENTO'}
                     </button>
                     {bankTransferAcknowledged ? (
                       <p className="booking-bank-transfer-feedback" role="status" aria-live="polite">
