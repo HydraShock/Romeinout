@@ -1763,7 +1763,9 @@ function App() {
                     />
                   </label>
                   <label className="booking-customer-field">
-                    <span>Cellulare</span>
+                    <span>
+                      {translateText('Cellulare')} <span className="booking-inline-gradient">({translateText('aggiungi il prefisso')})</span>
+                    </span>
                     <input
                       type="tel"
                       value={customerPhone}

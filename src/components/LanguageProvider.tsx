@@ -84,6 +84,7 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Nome': 'First Name',
   'Cognome': 'Last Name',
   'Cellulare': 'Phone',
+  'aggiungi il prefisso': 'add country code',
   'Numero Ospiti': 'Number of Guests',
   'I bambini non pagano.': 'Children do not pay.',
   'Conferma la tua Prenotazione': 'Confirm your Booking',
