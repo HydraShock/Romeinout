@@ -4909,7 +4909,7 @@ body {
 
 .booking-nav-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 18px;
   width: min(760px, 100%);
   margin: 0 auto;
@@ -5292,7 +5292,7 @@ body {
 .booking-confirm-row {
   text-align: left;
   display: grid;
-  grid-template-columns: 56px 1fr;
+  grid-template-columns: 56px minmax(0, 1fr);
   align-items: center;
   gap: 14px;
   background: #f8f8f8;
@@ -5322,6 +5322,8 @@ body {
   font-size: 0.78rem;
   color: #5c6778;
   font-weight: 600;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .booking-inline-gradient {
@@ -5338,6 +5340,8 @@ body {
   font-family: 'Poppins', sans-serif;
   font-size: 1.2rem;
   color: #131821;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .booking-guests {
@@ -5550,7 +5554,7 @@ body {
   gap: 5px;
 }
 
-.booking-bank-transfer-item span {
+.booking-bank-transfer-item > span {
   color: #4a6180;
   font-family: 'Poppins', sans-serif;
   font-size: 0.78rem;
@@ -6055,7 +6059,7 @@ body {
   }
 
   .booking-confirm-row {
-    grid-template-columns: 44px 1fr;
+    grid-template-columns: 44px minmax(0, 1fr);
     gap: 10px;
     padding: 10px 10px;
     border-radius: 12px;
@@ -6568,7 +6572,7 @@ body {
   }
 
   .booking-confirm-row {
-    grid-template-columns: 38px 1fr;
+    grid-template-columns: 38px minmax(0, 1fr);
     gap: 8px;
     padding: 8px;
     border-radius: 10px;
@@ -6637,6 +6641,75 @@ body {
     margin-bottom: 6px;
     padding: 0 8px;
     font-size: 0.64rem;
+  }
+
+  .booking-bank-transfer-panel {
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+
+  .booking-bank-transfer-method {
+    margin-bottom: 6px;
+    font-size: 0.76rem;
+  }
+
+  .booking-bank-transfer-panel h4 {
+    font-size: 0.95rem;
+    line-height: 1.2;
+  }
+
+  .booking-bank-transfer-description {
+    margin: 7px 0 10px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .booking-bank-transfer-grid {
+    gap: 8px;
+  }
+
+  .booking-bank-transfer-item {
+    padding: 8px 9px;
+    gap: 4px;
+  }
+
+  .booking-bank-transfer-item > span {
+    font-size: 0.66rem;
+  }
+
+  .booking-bank-transfer-item strong {
+    font-size: 0.88rem;
+    line-height: 1.28;
+  }
+
+  .booking-bank-transfer-item small {
+    font-size: 0.7rem;
+    line-height: 1.28;
+  }
+
+  .booking-bank-transfer-feedback {
+    font-size: 0.78rem;
+    line-height: 1.34;
+  }
+
+  .booking-bank-transfer-contact-box {
+    padding: 10px;
+  }
+
+  .booking-bank-transfer-contact-title {
+    font-size: 0.84rem;
+  }
+
+  .booking-bank-transfer-contact-copy {
+    margin: 6px 0 10px;
+    font-size: 0.78rem;
+    line-height: 1.38;
+  }
+
+  .booking-bank-transfer-contact-link {
+    min-height: 36px;
+    font-size: 0.74rem;
+    padding: 6px 7px;
   }
 
   .booking-primary-cta,

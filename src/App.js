@@ -11,6 +11,7 @@ import HeroFooterScene from './components/HeroFooterScene';
 import BackgroundArtLayer from './components/BackgroundArtLayer';
 import HeroAtmosphere from './components/HeroAtmosphere';
 import CtaMarbleTriptych from './components/CtaMarbleTriptych';
+import CookieBanner from './components/CookieBanner';
 import { useLanguage } from './components/LanguageProvider';
 import API_BASE_URL from './config/apiBaseUrl';
 
@@ -1981,9 +1982,7 @@ function App() {
                       </div>
                       <div className="booking-bank-transfer-item">
                         <span>{translateText('Causale')}</span>
-                        <strong>
-                          <span className="booking-inline-gradient">{bankTransferReference || '-'}</span>
-                        </strong>
+                        <strong>{bankTransferReference || '-'}</strong>
                         <small>{translateText('Usa questa causale nel bonifico.')}</small>
                       </div>
                     </div>
@@ -2267,6 +2266,7 @@ function App() {
         tourTitle={itineraryTour?.title || 'Roma Da Romano'}
         stops={itineraryStops}
       />
+      <CookieBanner />
       </div>
     </>
   );
