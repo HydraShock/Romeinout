@@ -1,0 +1,502 @@
+.navdock-root {
+  position: fixed;
+  top: 14px;
+  left: 0;
+  right: 0;
+  z-index: 130;
+  pointer-events: none;
+  transition: top 240ms ease;
+}
+
+.navdock-root.is-scrolled {
+  top: 10px;
+}
+
+.navdock-shell {
+  width: clamp(320px, 92vw, 1100px);
+  margin: 0 auto;
+  pointer-events: auto;
+}
+
+.navdock-border {
+  --glow-opacity: 0.54;
+  position: relative;
+  border-radius: 999px;
+  overflow: hidden;
+  padding: 1.5px;
+  background: linear-gradient(120deg, rgba(255, 220, 176, 0.62), rgba(255, 173, 93, 0.58), rgba(255, 205, 158, 0.62));
+  box-shadow:
+    0 14px 34px rgba(73, 35, 12, 0.22),
+    0 0 24px rgba(255, 153, 64, 0.2);
+}
+
+.navdock-root.is-scrolled .navdock-border {
+  --glow-opacity: 0.4;
+}
+
+.navdock-border::before {
+  content: '';
+  position: absolute;
+  inset: -96%;
+  border-radius: 999px;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 180, 102, 0.72) 52deg,
+    rgba(255, 138, 46, 0.88) 122deg,
+    rgba(255, 214, 164, 0.68) 178deg,
+    transparent 236deg,
+    rgba(255, 160, 76, 0.76) 304deg,
+    transparent 360deg
+  );
+  opacity: var(--glow-opacity);
+  filter: blur(9px) saturate(1.05);
+  mix-blend-mode: screen;
+  animation: borderRotate 11s linear infinite, borderPulse 4.8s ease-in-out infinite;
+}
+
+.navdock-pill {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 18px);
+  min-height: clamp(56px, 6vw, 64px);
+  padding: 0 clamp(12px, 2vw, 22px);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 245, 227, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 244, 0.8) 0%, rgba(255, 241, 219, 0.74) 100%),
+    radial-gradient(circle at 50% 0%, rgba(255, 198, 142, 0.16), rgba(255, 198, 142, 0) 62%);
+  backdrop-filter: blur(18px) saturate(115%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    inset 0 -1px 0 rgba(180, 118, 70, 0.2);
+  transition:
+    min-height 220ms ease,
+    background 220ms ease,
+    border-color 220ms ease;
+}
+
+.navdock-root.is-scrolled .navdock-pill {
+  min-height: 50px;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.9) 0%, rgba(255, 243, 223, 0.86) 100%),
+    radial-gradient(circle at 50% 0%, rgba(255, 198, 142, 0.14), rgba(255, 198, 142, 0) 62%);
+  border-color: rgba(255, 247, 234, 0.9);
+}
+
+.navdock-skyline {
+  position: absolute;
+  left: clamp(152px, 18vw, 228px);
+  right: clamp(210px, 20vw, 256px);
+  bottom: 6px;
+  height: 22px;
+  color: rgba(144, 98, 65, 0.5);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.navdock-skyline svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.navdock-brand {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  min-width: max-content;
+  color: #9a3f11;
+}
+
+.navdock-brand-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+  background: linear-gradient(145deg, #ffba1d, #f58a0a);
+  border: 1px solid rgba(255, 225, 170, 0.9);
+  box-shadow: 0 10px 20px rgba(177, 99, 10, 0.28);
+}
+
+.navdock-brand-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.75rem, 2.35vw, 2.1rem);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  color: #de5d06;
+}
+
+.navdock-links {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.2vw, 14px);
+  min-width: 0;
+  height: 100%;
+}
+
+.navdock-route-base,
+.navdock-route-shimmer {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 7px;
+  pointer-events: none;
+}
+
+.navdock-route-base {
+  border-bottom: 2px dotted rgba(168, 123, 90, 0.42);
+}
+
+.navdock-route-shimmer {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 176, 102, 0) 0%,
+    rgba(255, 198, 136, 0.62) 50%,
+    rgba(255, 176, 102, 0) 100%
+  );
+  opacity: 0.36;
+  filter: blur(0.2px);
+  animation: routeShimmer 7s linear infinite;
+}
+
+.navdock-route-dot {
+  position: absolute;
+  bottom: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 236, 214, 0.86);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 248, 240, 0.98) 0%, rgba(255, 181, 106, 0.92) 34%, rgba(246, 112, 15, 0.9) 100%);
+  box-shadow:
+    0 0 0 3px rgba(255, 170, 94, 0.18),
+    0 0 12px rgba(255, 146, 63, 0.56);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: left 380ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
+}
+
+.navdock-route-dot.is-visible {
+  opacity: 1;
+}
+
+.navdock-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 clamp(8px, 1.1vw, 14px) 6px;
+  text-decoration: none;
+  color: #5f4837;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.05rem, 1.35vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  transition: color 180ms ease, transform 220ms ease;
+}
+
+.navdock-link:hover {
+  color: #9f4a13;
+}
+
+.navdock-link.is-active {
+  color: #3f2f23;
+}
+
+.navdock-actions {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.navdock-cta {
+  --mx: 0px;
+  --my: 0px;
+  --lift: 0px;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 192, 111, 0.78);
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(108deg, #ffba19 0%, #ff8a00 48%, #ea3d00 100%);
+  background-size: 185% 185%;
+  box-shadow:
+    0 11px 22px rgba(202, 78, 8, 0.36),
+    0 0 20px rgba(255, 144, 56, 0.34);
+  transform: translate3d(var(--mx), calc(var(--my) - var(--lift)), 0);
+  transition: transform 220ms ease, box-shadow 240ms ease, filter 240ms ease;
+  animation: ctaGradient 10s ease-in-out infinite;
+}
+
+.navdock-cta::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: -46%;
+  width: 34%;
+  height: 180%;
+  transform: translateX(-150%) skewX(-22deg);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 247, 228, 0.68) 50%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.navdock-cta:hover {
+  --lift: 2px;
+  box-shadow:
+    0 14px 26px rgba(202, 78, 8, 0.43),
+    0 0 24px rgba(255, 151, 66, 0.42);
+  filter: saturate(1.06) brightness(1.02);
+}
+
+.navdock-cta:hover::before {
+  animation: sweep 900ms ease;
+}
+
+.navdock-cta-arrow {
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+.navdock-menu-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(197, 142, 96, 0.48);
+  background: rgba(255, 249, 238, 0.86);
+  color: #8f4f21;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.navdock-menu-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.navdock-menu-btn span + span {
+  margin-top: 4px;
+}
+
+.navdock-menu-btn.is-open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.navdock-menu-btn.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.navdock-menu-btn.is-open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.navdock-mobile-panel {
+  margin-top: 9px;
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 239, 215, 0.78);
+  background: linear-gradient(180deg, rgba(255, 252, 246, 0.92) 0%, rgba(255, 243, 225, 0.9) 100%);
+  backdrop-filter: blur(16px) saturate(112%);
+  box-shadow: 0 14px 28px rgba(67, 31, 10, 0.2);
+}
+
+.navdock-mobile-link {
+  display: block;
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #5f4837;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.navdock-mobile-link + .navdock-mobile-link {
+  margin-top: 4px;
+}
+
+.navdock-mobile-link:hover,
+.navdock-mobile-link.is-active {
+  color: #8f4311;
+  background: rgba(255, 232, 196, 0.56);
+}
+
+.navdock-brand:focus-visible,
+.navdock-link:focus-visible,
+.navdock-cta:focus-visible,
+.navdock-menu-btn:focus-visible,
+.navdock-mobile-link:focus-visible {
+  outline: 2px solid rgba(233, 125, 28, 0.88);
+  outline-offset: 2px;
+}
+
+@keyframes borderRotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes borderPulse {
+  0%,
+  100% {
+    opacity: var(--glow-opacity);
+  }
+
+  50% {
+    opacity: calc(var(--glow-opacity) - 0.12);
+  }
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(460%) skewX(-22deg);
+  }
+}
+
+@keyframes routeShimmer {
+  from {
+    transform: translateX(-28%);
+    opacity: 0.16;
+  }
+
+  50% {
+    opacity: 0.34;
+  }
+
+  to {
+    transform: translateX(28%);
+    opacity: 0.16;
+  }
+}
+
+@keyframes ctaGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@media (max-width: 900px) {
+  .navdock-brand-text {
+    font-size: clamp(1.58rem, 5vw, 1.86rem);
+  }
+
+  .navdock-link {
+    font-size: 1rem;
+  }
+
+  .navdock-cta {
+    min-height: 40px;
+    padding: 0 20px;
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .navdock-shell {
+    width: min(96vw, 660px);
+  }
+
+  .navdock-pill {
+    grid-template-columns: auto 1fr auto;
+    min-height: 52px;
+    gap: 10px;
+    padding: 0 10px 0 12px;
+  }
+
+  .navdock-root.is-scrolled .navdock-pill {
+    min-height: 50px;
+  }
+
+  .navdock-skyline,
+  .navdock-links {
+    display: none;
+  }
+
+  .navdock-brand {
+    gap: 8px;
+  }
+
+  .navdock-brand-icon {
+    width: 33px;
+    height: 33px;
+    border-radius: 10px;
+    font-size: 0.98rem;
+  }
+
+  .navdock-brand-text {
+    font-size: clamp(1.45rem, 7vw, 1.75rem);
+  }
+
+  .navdock-actions {
+    gap: 8px;
+  }
+
+  .navdock-cta {
+    min-height: 36px;
+    padding: 0 16px;
+    font-size: 0.96rem;
+  }
+
+  .navdock-menu-btn {
+    display: inline-flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navdock-border::before,
+  .navdock-route-shimmer,
+  .navdock-cta,
+  .navdock-cta::before {
+    animation: none !important;
+  }
+
+  .navdock-route-dot,
+  .navdock-link,
+  .navdock-cta,
+  .navdock-pill,
+  .navdock-root,
+  .navdock-menu-btn span {
+    transition: none !important;
+  }
+}

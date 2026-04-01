@@ -11,9 +11,7 @@ import HeroFooterScene from './components/HeroFooterScene';
 import BackgroundArtLayer from './components/BackgroundArtLayer';
 import HeroAtmosphere from './components/HeroAtmosphere';
 import CtaMarbleTriptych from './components/CtaMarbleTriptych';
-import CookieBanner from './components/CookieBanner';
 import { useLanguage } from './components/LanguageProvider';
-import API_BASE_URL from './config/apiBaseUrl';
 
 const heroRomeImages = [
   'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=900&q=80',
@@ -28,9 +26,9 @@ const sharedCtaImageStyle = { '--footer-map-image': "url('/assets/rename.png')" 
 const tours = [
   {
     id: 'classico',
-    title: 'Tour delle Piazze',
-    price: 99,
-    duration: '2-3 ore',
+    title: 'Roma \n Da Romano',
+    price: 89,
+    duration: '3 ore',
     capacity: '1-4 persone',
     rating: 5,
     description: 'Esplora i monumenti piu iconici di Roma',
@@ -40,9 +38,9 @@ const tours = [
   },
   {
     id: 'completo',
-    title: 'Tour delle Chiese',
-    price: 99,
-    duration: '2-3 ore',
+    title: 'Roma Mangia Prega Ama',
+    price: 149,
+    duration: '5 ore',
     capacity: '1-4 persone',
     rating: 5.0,
     popular: true,
@@ -86,10 +84,10 @@ const availableTimes = [
 const bookingTourOptions = [
   {
     id: 'roma-mangia-prega-ama',
-    title: 'Tour delle Piazze',
-    price: 99,
+    title: 'Roma Da Romano',
+    price: 79,
     rating: 4.8,
-    duration: '2-3 ore',
+    duration: '2.5 ore',
     capacity: '1-4 persone',
     description: 'Tra vicoli iconici, sapori romani e scorci indimenticabili.',
     stops: ['Fontana di Trevi', 'Piazza di Spagna', 'Pantheon'],
@@ -98,10 +96,10 @@ const bookingTourOptions = [
   },
   {
     id: 'when-in-rome',
-    title: 'Tour delle Chiese',
-    price: 99,
+    title: 'Roma Mangia Prega Ama',
+    price: 149,
     rating: 5.0,
-    duration: '2-3 ore',
+    duration: '5 ore',
     capacity: '1-4 persone',
     popular: true,
     description: "L'esperienza completa per vivere Roma come un locale.",
@@ -111,6 +109,7 @@ const bookingTourOptions = [
   },
 ];
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:4000/api';
 const FALLBACK_PAYMENT_MODE = (process.env.REACT_APP_PAYMENT_MODE || 'mock').toLowerCase();
 const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID || 'service_al2ttvn';
 const EMAILJS_TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || 'template_sfyxzh5';
@@ -192,16 +191,6 @@ function formatEurAmount(value, locale = 'it-IT') {
   });
 }
 
-function generateBankTransferReference() {
-  let randomValue = Math.floor(Math.random() * 1000000);
-  if (typeof window !== 'undefined' && window.crypto?.getRandomValues) {
-    const randomBuffer = new Uint32Array(1);
-    window.crypto.getRandomValues(randomBuffer);
-    randomValue = Number(randomBuffer[0] % 1000000);
-  }
-  return `Prenotazione-${String(randomValue).padStart(6, '0')}`;
-}
-
 function resolvePaymentProviderBadge(provider) {
   if (provider === 'mock') {
     return 'TEST';
@@ -249,7 +238,7 @@ const galleryImages = [
   'https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=1200&q=80',
   'https://images.unsplash.com/photo-1531572753322-ad063cecc140?auto=format&fit=crop&w=1200&q=80',
   'https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1525874684015-58379d421a52?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1555992336-fb0d29498b13?auto=format&fit=crop&w=1200&q=80',
 ];
 
 function TourShowcaseCard({ tour, onViewRoute }) {
@@ -365,7 +354,6 @@ function App() {
   const [paymentConfigError, setPaymentConfigError] = useState('');
   const [paypalClientId, setPaypalClientId] = useState(FALLBACK_PAYPAL_CLIENT_ID);
   const [bankTransferAcknowledged, setBankTransferAcknowledged] = useState(false);
-  const [bankTransferReference, setBankTransferReference] = useState('');
   const [paypalSdkReady, setPaypalSdkReady] = useState(false);
   const [paypalSdkError, setPaypalSdkError] = useState('');
   const [completedBooking, setCompletedBooking] = useState(null);
@@ -782,16 +770,6 @@ function App() {
   }, [currentStep, selectedPaymentProvider, visiblePaymentProviders]);
 
   useEffect(() => {
-    if (currentStep !== 6 || selectedPaymentProvider !== BANK_TRANSFER_PROVIDER) {
-      return;
-    }
-    if (bankTransferReference) {
-      return;
-    }
-    setBankTransferReference(generateBankTransferReference());
-  }, [bankTransferReference, currentStep, selectedPaymentProvider]);
-
-  useEffect(() => {
     return () => {
       transitionTimersRef.current.forEach((id) => window.clearTimeout(id));
     };
@@ -944,7 +922,6 @@ function App() {
     setCompletedBooking(null);
     setSelectedPaymentProvider(paymentProviders[0] || FALLBACK_CHECKOUT_PROVIDER);
     setBankTransferAcknowledged(false);
-    setBankTransferReference('');
     setPaypalSdkError('');
     setIsPaying(false);
     paypalIntentIdRef.current = '';
@@ -1030,7 +1007,6 @@ function App() {
     setCompletedBooking(null);
     setPaypalSdkError('');
     setBankTransferAcknowledged(false);
-    setBankTransferReference('');
     setSelectedPaymentProvider((current) => (
       visiblePaymentProviders.includes(current)
         ? current
@@ -1196,26 +1172,13 @@ function App() {
         }
       }
     } catch (error) {
-      if (String(error?.message || '').toLowerCase().includes('fascia oraria')) {
-        await refreshAvailabilityForCurrentMonth();
-      }
       window.alert(error.message || translateText('Errore durante il pagamento.'));
     } finally {
       setIsPaying(false);
     }
-  }, [
-    confirmBookingIntent,
-    createBookingIntent,
-    handlePaymentSuccess,
-    refreshAvailabilityForCurrentMonth,
-    sendBookingConfirmationEmail,
-    translateText,
-  ]);
+  }, [confirmBookingIntent, createBookingIntent, handlePaymentSuccess, sendBookingConfirmationEmail, translateText]);
 
   const startCheckout = () => {
-    if (isPaying) {
-      return;
-    }
     if (selectedPaymentProvider === 'paypal') {
       window.alert(translateText('Seleziona PayPal e completa il checkout dal pulsante PayPal.'));
       return;
@@ -1233,13 +1196,9 @@ function App() {
     }
 
     if (selectedPaymentProvider === BANK_TRANSFER_PROVIDER) {
-      const reference = bankTransferReference || generateBankTransferReference();
-      if (!bankTransferReference) {
-        setBankTransferReference(reference);
-      }
       completeManualPayment({
         provider: BANK_TRANSFER_PROVIDER,
-        reference,
+        reference: '',
       });
       return;
     }
@@ -1791,9 +1750,7 @@ function App() {
                     />
                   </label>
                   <label className="booking-customer-field">
-                    <span>
-                      {translateText('Cellulare')} <span className="booking-inline-gradient">({translateText('aggiungi il prefisso')})</span>
-                    </span>
+                    <span>Cellulare</span>
                     <input
                       type="tel"
                       value={customerPhone}
@@ -1980,20 +1937,14 @@ function App() {
                         <span>Importo</span>
                         <strong>EUR {formatEurAmount(bookingTotalAmount, locale)}</strong>
                       </div>
-                      <div className="booking-bank-transfer-item">
-                        <span>{translateText('Causale')}</span>
-                        <strong>{bankTransferReference || '-'}</strong>
-                        <small>{translateText('Usa questa causale nel bonifico.')}</small>
-                      </div>
                     </div>
                     <button
                       type="button"
                       className="booking-primary-cta booking-bank-transfer-btn"
                       onClick={startCheckout}
-                      disabled={isPaying}
                       aria-live="polite"
                     >
-                      {isPaying ? 'INVIO IN CORSO...' : 'HO EFFETTUATO PAGAMENTO'}
+                      HO EFFETTUATO PAGAMENTO
                     </button>
                     {bankTransferAcknowledged ? (
                       <p className="booking-bank-transfer-feedback" role="status" aria-live="polite">
@@ -2209,7 +2160,7 @@ function App() {
             <h3 id="footer-map-title">
               Dove <span>Siamo</span>?
             </h3>
-            <p>Venite a trovarci! Lun-Ven 9:30-17:00, Sab 10:00-13:00, Dom chiuso.</p>
+            <p>Venite a trovarci! Siamo aperti dalle 7:00 alle 23:00</p>
           </div>
 
           <div className="footer-map-shell">
@@ -2263,10 +2214,9 @@ function App() {
       <ItineraryDrawer
         open={isItineraryOpen}
         onClose={() => setIsItineraryOpen(false)}
-        tourTitle={itineraryTour?.title || 'Tour delle Piazze'}
+        tourTitle={itineraryTour?.title || 'Roma Da Romano'}
         stops={itineraryStops}
       />
-      <CookieBanner />
       </div>
     </>
   );

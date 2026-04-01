@@ -43,8 +43,6 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Scopri la citta in modo comodo, panoramico e senza stress.': 'Discover the city in a comfortable, panoramic and stress-free way.',
   'Scopri i tour': 'Explore tours',
   'PI\u00D9 POPOLARE': 'MOST POPULAR',
-  'Tour delle Piazze': 'Squares Tour',
-  'Tour delle Chiese': 'Churches Tour',
   'Roma Da Romano': 'Roma Da Romano',
   'Roma \n Da Romano': 'Roma \n Da Romano',
   'Roma Mangia Prega Ama': 'Roma Mangia Prega Ama',
@@ -54,7 +52,6 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   "L'esperienza completa per vivere Roma come un locale.": 'The complete experience to live Rome like a local.',
   'Tra vicoli iconici, sapori romani e scorci indimenticabili.': 'Through iconic alleys, Roman flavors and unforgettable views.',
   'Esplora i monumenti piu iconici di Roma': 'Explore the most iconic monuments of Rome',
-  '2-3 ore': '2-3 hours',
   '3 ore': '3 hours',
   '5 ore': '5 hours',
   '2.5 ore': '2.5 hours',
@@ -77,7 +74,6 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'A partire da': 'Starting from',
   'Vedi percorso': 'View route',
   'Scegli la Fascia Oraria': 'Choose Time Slot',
-  "Scegli la data e l'orario perfetto per la tua esperienza indimenticabile a Roma": 'Choose the perfect date and time for your unforgettable experience in Rome',
   'Aggiornamento disponibilita in corso...': 'Updating availability...',
   'Scegli il Tour': 'Choose Tour',
   'Scegli il ': 'Choose ',
@@ -88,9 +84,6 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Nome': 'First Name',
   'Cognome': 'Last Name',
   'Cellulare': 'Phone',
-  'aggiungi il prefisso': 'add country code',
-  'Causale': 'Payment reference',
-  'Usa questa causale nel bonifico.': 'Use this reference in the bank transfer.',
   'Numero Ospiti': 'Number of Guests',
   'I bambini non pagano.': 'Children do not pay.',
   'Conferma la tua Prenotazione': 'Confirm your Booking',
@@ -109,19 +102,13 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Paga in sicurezza con PayPal': 'Pay securely with PayPal',
   'Checkout online protetto con PayPal.': 'Secure online checkout with PayPal.',
   'Metodo di pagamento: Bonifico': 'Payment method: Bank transfer',
-  'Bonifico': 'Bank Transfer',
-  'BONIFICO': 'BANK TRANSFER',
   'Pagamento manuale con verifica bonifico.': 'Manual payment pending bank transfer verification.',
   'Totale:': 'Total:',
   'Completa il pagamento tramite bonifico': 'Complete payment by bank transfer',
   'Per confermare la prenotazione, effettua il pagamento tramite bonifico usando i dati qui sotto. Dopo aver effettuato il pagamento, clicca sul pulsante \u201CHO EFFETTUATO PAGAMENTO\u201D.': 'To confirm your booking, make a bank transfer using the details below. After payment, click the "I HAVE COMPLETED PAYMENT" button.',
   'Intestatario': 'Beneficiary',
   'Importo': 'Amount',
-  'Dati bonifico': 'Bank transfer details',
-  'ospiti': 'guests',
-  'INVIO IN CORSO...': 'SENDING...',
   'HO EFFETTUATO PAGAMENTO': 'I HAVE COMPLETED PAYMENT',
-  'SEGNALAZIONE INVIATA': 'NOTICE SENT',
   'Grazie! Abbiamo ricevuto la tua segnalazione di pagamento e verificheremo il bonifico il prima possibile.': 'Thank you! We received your payment notice and will verify the bank transfer as soon as possible.',
   'Segnalazione pagamento ricevuta': 'Payment notice received',
   'Prenotazione in aggiornamento': 'Booking update in progress',
@@ -153,7 +140,6 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Dove ': 'Where ',
   'Siamo': 'Are We',
   'Venite a trovarci! Siamo aperti dalle 7:00 alle 23:00': 'Come visit us! We are open from 7:00 to 23:00',
-  'Venite a trovarci! Lun-Ven 9:30-17:00, Sab 10:00-13:00, Dom chiuso.': 'Come visit us! Mon-Fri 9:30-17:00, Sat 10:00-13:00, Sun closed.',
   'Mappa sede Tuk Tuk Roma - Via Cavour 134': 'Tuk Tuk Roma office map - Via Cavour 134',
   '00184 Roma, Italia': '00184 Rome, Italy',
   'Vieni a Trovarci!': 'Come Visit Us!',
@@ -172,7 +158,6 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Lun - Ven': 'Mon - Fri',
   'Sabato': 'Saturday',
   'Domenica': 'Sunday',
-  'Chiuso': 'Closed',
   'Informativa sulla privacy': 'Privacy Policy',
   'Termini e Condizioni': 'Terms and Conditions',
   'Politica sui cookie': 'Cookie Policy',
@@ -233,7 +218,6 @@ const IT_TO_EN_TEXT_REPLACEMENTS: Record<string, string> = {
   'Illustrazione del Pantheon': 'Pantheon illustration',
   'Illustrazione del Colosseo': 'Colosseum illustration',
   'Illustrazione Tuk Tuk Roma': 'Tuk Tuk Rome illustration',
-  'Santa Maria Maggiore': 'Santa Maria Maggiore',
   'Rientro': 'Return',
   'Vaticano': 'The Vatican',
   'Centro Storico': 'Historic Center',
@@ -290,36 +274,14 @@ function normalizeToSupportedLang(rawLang: string): Lang | null {
   return SUPPORTED_LANGS.includes(normalized as Lang) ? (normalized as Lang) : null;
 }
 
-function escapeRegExp(input: string) {
-  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function isShortStandaloneToken(input: string) {
-  return /^[A-Za-z]{1,3}$/.test(input);
-}
-
 function applyTextReplacementMap(input: string, replacementMap: Record<string, string>) {
   let output = input;
   const entries = Object.entries(replacementMap).sort((a, b) => b[0].length - a[0].length);
 
   entries.forEach(([sourceText, targetText]) => {
-    if (!sourceText) {
+    if (!sourceText || !output.includes(sourceText)) {
       return;
     }
-
-    if (isShortStandaloneToken(sourceText)) {
-      const tokenRegex = new RegExp(`\\b${escapeRegExp(sourceText)}\\b`, 'g');
-      if (!tokenRegex.test(output)) {
-        return;
-      }
-      output = output.replace(tokenRegex, targetText);
-      return;
-    }
-
-    if (!output.includes(sourceText)) {
-      return;
-    }
-
     output = output.split(sourceText).join(targetText);
   });
 

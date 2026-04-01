@@ -27,9 +27,9 @@ const CONTACTS = [
 ];
 
 const OPENING_HOURS = [
-  { day: 'Lun - Ven', hours: '09:30 - 17:00' },
-  { day: 'Sabato', hours: '10:00 - 13:00' },
-  { day: 'Domenica', hours: 'Chiuso' },
+  { day: 'Lun - Ven', hours: '07:00 - 23:00' },
+  { day: 'Sabato', hours: '07:00 - 23:00' },
+  { day: 'Domenica', hours: '07:00 - 23:00' },
 ];
 
 const SOCIALS = [
